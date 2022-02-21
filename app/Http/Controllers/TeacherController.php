@@ -15,7 +15,7 @@ class TeacherController extends Controller
     {
         $this->middleware('auth', [
             'except' => [
-                'profile','add'
+                'profile',
 
             ],
         ]);
