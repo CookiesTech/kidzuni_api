@@ -2,13 +2,11 @@
 
 namespace Laravel\Lumen\Routing;
 
-use Exception;
-use Throwable;
 use Closure as BaseClosure;
-use Illuminate\Http\Request;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline as BasePipeline;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Throwable;
 
 /**
  * This extended pipeline catches any exceptions that occur during each slice.
@@ -29,11 +27,9 @@ class Pipeline extends BasePipeline
                 try {
                     $slice = parent::carry();
 
-                    return call_user_func($slice($stack, $pipe), $passable);
-                } catch (Exception $e) {
-                    return $this->handleException($passable, $e);
+                    return ($slice($stack, $pipe))($passable);
                 } catch (Throwable $e) {
-                    return $this->handleException($passable, new FatalThrowableError($e));
+                    return $this->handleException($passable, $e);
                 }
             };
         };
@@ -49,11 +45,9 @@ class Pipeline extends BasePipeline
     {
         return function ($passable) use ($destination) {
             try {
-                return call_user_func($destination, $passable);
-            } catch (Exception $e) {
-                return $this->handleException($passable, $e);
+                return $destination($passable);
             } catch (Throwable $e) {
-                return $this->handleException($passable, new FatalThrowableError($e));
+                return $this->handleException($passable, $e);
             }
         };
     }
@@ -62,10 +56,10 @@ class Pipeline extends BasePipeline
      * Handle the given exception.
      *
      * @param  mixed  $passable
-     * @param  \Exception  $e
+     * @param  \Throwable  $e
      * @return mixed
      */
-    protected function handleException($passable, Exception $e)
+    protected function handleException($passable, Throwable $e)
     {
         if (! $this->container->bound(ExceptionHandler::class) || ! $passable instanceof Request) {
             throw $e;

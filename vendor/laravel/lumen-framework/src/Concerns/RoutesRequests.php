@@ -3,25 +3,26 @@
 namespace Laravel\Lumen\Concerns;
 
 use Closure;
-use Throwable;
 use FastRoute\Dispatcher;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
+use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Laravel\Lumen\Routing\Pipeline;
-use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Laravel\Lumen\Http\Request as LumenRequest;
 use Laravel\Lumen\Routing\Closure as RoutingClosure;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Laravel\Lumen\Routing\Controller as LumenController;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Laravel\Lumen\Routing\Pipeline;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use RuntimeException;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 trait RoutesRequests
 {
@@ -56,7 +57,7 @@ trait RoutesRequests
     /**
      * Add new middleware to the application.
      *
-     * @param  Closure|array  $middleware
+     * @param  \Closure|array  $middleware
      * @return $this
      */
     public function middleware($middleware)
@@ -84,7 +85,10 @@ trait RoutesRequests
     }
 
     /**
-     * {@inheritdoc}
+     * Dispatch request and return response.
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function handle(SymfonyRequest $request)
     {
@@ -100,7 +104,7 @@ trait RoutesRequests
     /**
      * Run the application and send the response.
      *
-     * @param  SymfonyRequest|null  $request
+     * @param  \Symfony\Component\HttpFoundation\Request|null  $request
      * @return void
      */
     public function run($request = null)
@@ -148,8 +152,8 @@ trait RoutesRequests
     /**
      * Dispatch the incoming request.
      *
-     * @param  SymfonyRequest|null  $request
-     * @return Response
+     * @param  \Symfony\Component\HttpFoundation\Request|null  $request
+     * @return \Illuminate\Http\Response
      */
     public function dispatch($request = null)
     {
@@ -194,7 +198,7 @@ trait RoutesRequests
     /**
      * Create a FastRoute dispatcher instance for the application.
      *
-     * @return Dispatcher
+     * @return \FastRoute\Dispatcher
      */
     protected function createDispatcher()
     {
@@ -265,7 +269,7 @@ trait RoutesRequests
     }
 
     /**
-     * Call the Closure on the array based route.
+     * Call the Closure or invokable on the array based route.
      *
      * @param  array  $routeInfo
      * @return mixed
@@ -280,13 +284,22 @@ trait RoutesRequests
 
         foreach ($action as $value) {
             if ($value instanceof Closure) {
-                $closure = $value->bindTo(new RoutingClosure);
+                $callable = $value->bindTo(new RoutingClosure);
+                break;
+            }
+
+            if (is_object($value) && is_callable($value)) {
+                $callable = $value;
                 break;
             }
         }
 
+        if (! isset($callable)) {
+            throw new RuntimeException('Unable to resolve route handler.');
+        }
+
         try {
-            return $this->prepareResponse($this->call($closure, $routeInfo[2]));
+            return $this->prepareResponse($this->call($callable, $routeInfo[2]));
         } catch (HttpResponseException $e) {
             return $e->getResponse();
         }
@@ -383,7 +396,7 @@ trait RoutesRequests
     /**
      * Gather the full class names for the middleware short-cut string.
      *
-     * @param  string  $middleware
+     * @param  string|array  $middleware
      * @return array
      */
     protected function gatherMiddlewareClassNames($middleware)
@@ -420,7 +433,7 @@ trait RoutesRequests
      * Prepare the response for sending.
      *
      * @param  mixed  $response
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function prepareResponse($response)
     {

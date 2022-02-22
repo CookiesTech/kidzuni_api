@@ -59,7 +59,7 @@ class Router
 
         $this->updateGroupStack($attributes);
 
-        call_user_func($callback, $this);
+        $callback($this);
 
         array_pop($this->groupStack);
     }
@@ -110,7 +110,7 @@ class Router
     /**
      * Merge the given group attributes with the last added group.
      *
-     * @param  array $new
+     * @param  array  $new
      * @return array
      */
     protected function mergeWithLastGroup($new)
@@ -148,7 +148,7 @@ class Router
         $oldPrefix = $old['prefix'] ?? null;
 
         if (isset($new['prefix'])) {
-            return trim($oldPrefix, '/').'/'.trim($new['prefix'], '/');
+            return trim($oldPrefix ?? '', '/').'/'.trim($new['prefix'], '/');
         }
 
         return $oldPrefix;
@@ -234,7 +234,7 @@ class Router
      * Merge the group attributes into the action.
      *
      * @param  array  $action
-     * @param  array  $attributes The group attributes
+     * @param  array  $attributes
      * @return array
      */
     protected function mergeGroupAttributes(array $action, array $attributes)
@@ -255,7 +255,7 @@ class Router
      * Merge the namespace group into the action.
      *
      * @param  array  $action
-     * @param  string $namespace
+     * @param  string  $namespace
      * @return array
      */
     protected function mergeNamespaceGroup(array $action, $namespace = null)
@@ -270,8 +270,8 @@ class Router
     /**
      * Prepend the namespace onto the use clause.
      *
-     * @param  string $class
-     * @param  string $namespace
+     * @param  string  $class
+     * @param  string  $namespace
      * @return string
      */
     protected function prependGroupNamespace($class, $namespace = null)
@@ -303,8 +303,8 @@ class Router
     /**
      * Merge the as group into the action.
      *
-     * @param  array $action
-     * @param  string $as
+     * @param  array  $action
+     * @param  string  $as
      * @return array
      */
     protected function mergeAsGroup(array $action, $as = null)
