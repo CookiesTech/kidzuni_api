@@ -13,7 +13,7 @@ class StandardController extends Controller
     {
         $this->middleware('auth', [
             'except' => [
-                'getAllStandard',
+                'getAll',
 
             ],
         ]);
