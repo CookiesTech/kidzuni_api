@@ -15,7 +15,7 @@ class SubjectController extends Controller
     {
         $this->middleware('auth',['except'=>
         [
-            'getAllSubjects',
+            'getAll',
     ],
     ]);
     }
