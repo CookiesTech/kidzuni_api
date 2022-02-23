@@ -32,7 +32,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('getAllsubCategory', 'SubCategoryController@getAll');
     $router->post('add_subCategory', 'SubCategoryController@add');
     $router->get('delete_subCategory/{id}', 'SubCategoryController@delete');
-
+   
     $router->get('getAllQuestions', 'QuestionController@getAll');
     $router->post('upload_question', 'QuestionController@upload_question');
+
+     $router->post('getTopics','TopicsController@getTopics');
 });
