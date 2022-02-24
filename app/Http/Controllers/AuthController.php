@@ -11,6 +11,12 @@ use Firebase\JWT\JWT;
 class AuthController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('auth',[
+            'except'=>['login','register'],
+        ]);
+    }
     protected function create_token($id, $expiry)
     {
         $total_time = $expiry;
@@ -38,12 +44,15 @@ class AuthController extends Controller
             $plainPassword = $request->input('password');
             DB::table('users')->insert([
                 'name' => $request->input('name'), 'email' => $request->input('email'),
-                'password' => app('hash')->make($plainPassword)
+                'password' => app('hash')->make($plainPassword),'phone_no'=>$request->input('phone_no'),
+                'no_of_children'=>$request->input('no_of_children'),'subject_id'=>$request->input('subject_id'),
+                'subscription_type'=>$request->input('subscription_type'),'secret_id'=>sprintf("%03d", mt_rand(1, 999999)),
+                'login_type'=>'parent','role'=>3
             ]);
 
 
             //return successful response
-            return response()->json(['status' => true, 'message' => 'CREATED'], 200);
+            return response()->json(['status' => true, 'message' => 'User Registration Successfully'], 200);
         } catch (\Exception $e) {
             //return error message
             return response()->json(['status' => false, 'message' => 'User Registration Failed!'], 409);
