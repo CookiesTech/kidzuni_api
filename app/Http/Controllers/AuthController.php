@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use DB;
 use Firebase\JWT\JWT;
+use Validator;
 
 class AuthController extends Controller
 {
