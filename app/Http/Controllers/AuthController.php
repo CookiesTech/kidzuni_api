@@ -34,11 +34,16 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         //validate incoming request 
-        $this->validate($request, [
+         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required',
         ]);
+       
+
+        if ($validator->fails()) {
+            return $this->formatErrorResponse($validator);
+        }
 
         try {
             $plainPassword = $request->input('password');
