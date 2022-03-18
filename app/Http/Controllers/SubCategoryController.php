@@ -50,7 +50,11 @@ class SubCategoryController extends Controller
     public function getAll()
     {
         try {
-            $data = DB::table('subcategory as s')->join('maincategory as m', 'm.id', '=', 's.mc_id')->select('s.name', 's.id', 'm.name as mcname')->get();
+            $data = DB::table('subcategory as s')->join('maincategory as m', 'm.id', '=', 's.mc_id')
+            ->join('standards as std','std.id','=','m.standard_id')
+            ->join('countries as c','c.id','=','std.country_code')
+            ->select('s.name', 's.id', 'm.name as mcname','std.standard_name','c.image')->orderBy('s.id','desc')
+            ->get();
 
             return response()->json(['status' => true, 'data' => $data], 200);
         } catch (\Exception $e) {

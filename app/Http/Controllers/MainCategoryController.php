@@ -50,7 +50,8 @@ class MainCategoryController extends Controller
     public function getAll()
     {
         try {
-            $data = DB::table('maincategory as m')->join('standards as s', 'm.standard_id', '=', 's.id')->select('s.standard_name', 'm.id', 'm.name')->get();
+            $data = DB::table('maincategory as m')->join('standards as s','s.id','=','m.standard_id')
+            ->join('countries as c','c.id','=','s.country_code')->select('m.id', 'm.name','s.standard_name','c.code','c.image')->orderBy('m.id','desc')->get();
 
             return response()->json(['status' => true, 'data' => $data], 200);
         } catch (\Exception $e) {
@@ -58,6 +59,13 @@ class MainCategoryController extends Controller
             return response()->json(['status' => false, 'data' => []], 200);
         }
     }
+    
+    public function getMainCategoryByStandardId(Request $request){
+
+         return response()->json(['status' => true, 'data' => DB::table('maincategory')->where('standard_id',$request->post('standard_id'))->select('id','name')->get()], 200);
+       
+    }
+
 
     public function delete($id)
     {

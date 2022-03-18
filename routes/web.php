@@ -23,11 +23,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->get('getAllStandard', 'StandardController@getAll');
     $router->post('add_standard', 'StandardController@add');
+    $router->post('getStandardsByCountryId','StandardController@getStandardsByCountryId');
     $router->get('delete_subject/{id}', 'StandardController@delete');
 
     $router->get('getAllmainCategory', 'MainCategoryController@getAll');
     $router->post('add_mainCategory', 'MainCategoryController@add');
     $router->get('delete_mainCategory/{id}', 'MainCategoryController@delete');
+    $router->post('getMainCategoryByStandardId','MainCategoryController@getMainCategoryByStandardId');
 
     $router->get('getAllsubCategory', 'SubCategoryController@getAll');
     $router->post('add_subCategory', 'SubCategoryController@add');
@@ -37,4 +39,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('upload_question', 'QuestionController@upload_question');
 
      $router->post('getTopics','TopicsController@getTopics');
+
+     $router->get('getAllCountry','CountryController@getAll');
+     $router->post('add_country','CountryController@add');
+    $router->get('delete_country/{id}', 'CountryController@delete_country');
 });
