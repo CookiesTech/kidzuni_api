@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Auth;
 
 class Controller extends BaseController
 {
+     /**
+     * @OA\Info(
+     *    title="Student  ApplicationAPI",
+     *    version="1.0.0",
+     * )
+     */
     protected function respondWithToken($token)
     {
         $user = array('name' => Auth::user()->name, 'email' => Auth::user()->email, 'role' => 'SA');

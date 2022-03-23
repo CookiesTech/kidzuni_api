@@ -14,7 +14,42 @@ class MainCategoryController extends Controller
         $this->middleware('auth');
     }
 
-
+/**
+     * @OA\Post(
+     * path="/add",
+     * description="add",
+     * operationId="add",
+     * tags={" Main Category"},
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Pass info",
+     *    @OA\JsonContent(
+     *       required={"start_date","end_date","filter","line_id","section_id"},
+     *       @OA\Property(property="start_date", type="string", format="start_date", example="2022-02-03 0:0:0"),
+     *       @OA\Property(property="end_date", type="string", format="end_date", example="2022-02-05 0:0:0"),
+     *       @OA\Property(property="filter", type="string", format="filter", example="custom_date"),
+     *      @OA\Property(property="line_id", type="integer", format="line_id", example="3"),
+     *      @OA\Property(property="section_id", type="integer", format="section_id", example="6"),
+     *      
+     *    ),
+     * ),
+     *     @OA\Parameter(
+     *         description="",
+     *         in="header",
+     *         name="token",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *     ),
+     *         @OA\Response(
+     *    response=200,
+     *    description="success",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="data", type="string", example= "{
+     *  data: {employees:[{}] }}")
+     *        )
+     *     ),
+     * )
+     */
     public function add(Request $request)
     {
 

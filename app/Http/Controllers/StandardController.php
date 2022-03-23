@@ -53,10 +53,12 @@ class StandardController extends Controller
         }
     }
 
-    public function getAll()
+    public function getAll(Request $request)
     {
+        $country_code=$request->post('country_code');
         try {
             $data = DB::table('standards as s')->join('countries as c','c.id','=','s.country_code')->
+            where('s.country_code',$country_code)->
             select('s.id','s.standard_name','c.name as country_code','c.image')->orderBy('s.id','desc')->get();
 
             return response()->json(['status' => true, 'data' => $data], 200);

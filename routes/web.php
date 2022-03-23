@@ -16,12 +16,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('delete_teacher/{id}', 'TeacherController@delete_teacher');
 
     $router->post('/add_subject', 'SubjectController@add');
-    $router->get('/getAllSubjects', 'SubjectController@getAll');
+    $router->post('/getAllSubjects', 'SubjectController@getAll');
     $router->get('/delete_subject/{id}', 'SubjectController@delete_subject');
     $router->get('getSubjectByID/{id}', 'SubjectController@edit');
     $router->post('subject_update', 'SubjectController@update');
 
-    $router->get('getAllStandard', 'StandardController@getAll');
+    $router->post('getAllStandard', 'StandardController@getAll');
     $router->post('add_standard', 'StandardController@add');
     $router->post('getStandardsByCountryId','StandardController@getStandardsByCountryId');
     $router->get('delete_subject/{id}', 'StandardController@delete');

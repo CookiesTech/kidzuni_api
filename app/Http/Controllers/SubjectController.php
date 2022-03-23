@@ -53,12 +53,21 @@ class SubjectController extends Controller
         }
     }
 
-    public function getAll()
+    public function getAll(Request $request)
     {
+        $country_code=$request->post('country_code');
+        $final_data=[];$temp=[];
         try {
-            $data = DB::table('subjects')->get();
+            $data = DB::table('subjects')->select('id','subject_name')->get();
+            if($data){
+                foreach($data as $sub){
+                    $skills_count=DB::table('questions')->where('subject_id',$sub->id)->where('country_code',$country_code)->count();
+                    $sub->skills_count=$skills_count;
+                    $temp=array_push($final_data,$sub);
+                }
+            }
 
-            return response()->json(['status' => true, 'data' => $data], 200);
+            return response()->json(['status' => true, 'data' => $final_data], 200);
         } catch (\Exception $e) {
 
             return response()->json(['status' => false, 'data' => []], 404);

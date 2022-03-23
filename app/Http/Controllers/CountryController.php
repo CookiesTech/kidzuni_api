@@ -64,17 +64,5 @@ class CountryController extends Controller
         
     }
 
-    public function edit($id)
-    {
-        return response()->json(['status' => true, 'data' => DB::table('countries')->where('id', $id)->select('id', 'standard', 'subject_name')->first()], 200);
-    }
-
-    public function update(Request $request)
-    {
-        $data = $request->post();
-
-        $id = $request->post('id');
-        DB::table('countries')->where('id', $id)->update(['standard' => $data[0]['standard'], 'subject_name' => $data[0]['subject_name']]);
-        return response()->json(['status' => true, 'message' => 'Successfully Updated'], 200);
-    }
+   
 }
