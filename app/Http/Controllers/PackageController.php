@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use DB;
 use Validator;
 
-class SubjectController extends Controller
+class PackageController extends Controller
 {
 
     public function __construct()
@@ -55,24 +55,11 @@ class SubjectController extends Controller
 
     public function getAll(Request $request)
     {
-        $country_code=$request->post('country_code')?$request->post('country_code'):3;
-        $final_data=[];$temp=[];
-        //echo $country_code;exit;
-        try {
-            $data = DB::table('subjects')->select('id','subject_name')->get();
-            if($data){
-                foreach($data as $sub){
-                    $skills_count=DB::table('subcategory')->where('subject_id',$sub->id)->where('country_code',$country_code)->count();
-                    $sub->skills_count=$skills_count;
-                    $temp=array_push($final_data,$sub);
-                }
-            }
+       
+        $data=DB::table('ppackage_manager')->get();
 
-            return response()->json(['status' => true, 'data' => $final_data], 200);
-        } catch (\Exception $e) {
-
-            return response()->json(['status' => false, 'data' => []], 404);
-        }
+        return response()->json(['status' => true, 'data' => $data], 200);
+        
     }
 
     public function delete_subject($id)

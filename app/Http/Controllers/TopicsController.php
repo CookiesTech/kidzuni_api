@@ -28,17 +28,29 @@ class TopicsController extends Controller
          $validator = Validator::make($request->all(), [
             'standard_id'           => 'required'
         ]);
-
+$student_id=$request->post('student_id')?$request->post('student_id'):'';
         if ($validator->fails()) {
             return $this->formatErrorResponse($validator);
         }
         try {
             $data = DB::table('maincategory as m')->where('m.standard_id',$request->post('standard_id'))->select('id','name')->get();
             if($data){
-                $i = 0;
+                $i = 0;$score=0;
                 foreach($data as $maintopics){
                      $categroies = array('main_topic' => $maintopics->name);
-                     $sub['sub_topics']=DB::table('subcategory')->where('mc_id',$maintopics->id)->select('id','name')->get();
+                     $sub_topics=DB::table('subcategory')->where('mc_id',$maintopics->id)->select('id','name')->get();
+                    foreach ($sub_topics as $key => $value) {
+                        #no login 
+                        if($student_id==''){
+                            $score=DB::table('scores')->where('subcategory_id',$value->id)->sum('score');
+                        } #user logged in
+                        else{
+                            $score=DB::table('scores')->where('subcategory_id',$value->id)->where('student_id',$student_id)->sum('score');
+                        }                      
+                        $value->score=$score;
+                        $sub['sub_topics'][] = $value;
+                    }
+                    
                      $sub['sub_topics'] = $sub['sub_topics'];
                     $res['Topics'][$i] = array_merge($categroies, $sub);
                      $i++;
