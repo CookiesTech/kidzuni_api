@@ -59,7 +59,7 @@ class StandardController extends Controller
         try {
             $data = DB::table('standards as s')->join('countries as c','c.id','=','s.country_code')->
             where('s.country_code',$country_code)->
-            select('s.id','s.standard_name','c.id as country_code')->orderBy('s.id','desc')->get();
+            select('s.id','s.standard_name','c.id as country_id')->orderBy('s.id','desc')->get();
 
             return response()->json(['status' => true, 'data' => $data], 200);
         } catch (\Exception $e) {
