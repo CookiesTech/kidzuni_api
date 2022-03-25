@@ -22,23 +22,26 @@ class PackageController extends Controller
 
 
     public function add(Request $request)
-    {
+    {       
 
-        if (!empty($request->post('data')[0]['subject_name'])) {
-
-            foreach ($request->post('data') as $key => $value) {
-
-                if (DB::table('subjects')->where('subject_name', $value['subject_name'])->count() == 0) {
-                    DB::table('subjects')->insert(['subject_name' => $value['subject_name']]);
+        if (!empty($request->post('data')['type'])) {
+           
+                if (DB::table('packages')->where('type', $request->post('data')['type'])->where('package_for', $request->post('data')['package_for'])->count() == 0) {
+                   if($request->post('data')['package_for']=='parent'){
+                        DB::table('packages')->insert(['type' => $request->post('data')['type'],'package_for'=>$request->post('data')['package_for'],
+                        'price'=>$request->post('data')['price'],'additional_price'=>$request->post('data')['additional_price']]);
+                   }else{
+                       DB::table('packages')->insert(['type' => $request->post('data')['type'],'package_for'=>$request->post('data')['package_for'],
+                        'minimum_count'=>$request->post('data')['student_min_count'],'maximum_count'=>$request->post('data')['student_max_count']]);
+                   }
                 } else {
                     //data exists
-
                     return response()->json([
                         'status' => false,
-                        'message' => sprintf('%s is already taken.', $value['subject_name'])
+                        'message' => sprintf('%s This Package Type is already taken.')
                     ], 200);
                 }
-            }
+            
 
             return response()->json([
                 'status' => true,
@@ -56,7 +59,7 @@ class PackageController extends Controller
     public function getAll(Request $request)
     {
        
-        $data=DB::table('ppackage_manager')->get();
+        $data=DB::table('packages')->get();
 
         return response()->json(['status' => true, 'data' => $data], 200);
         

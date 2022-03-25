@@ -45,4 +45,5 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('delete_country/{id}', 'CountryController@delete_country');
 
     $router->get('getAllpackages','PackageController@getAll');
+    $router->post('add_package','PackageController@add');
 });
