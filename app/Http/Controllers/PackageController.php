@@ -15,7 +15,7 @@ class PackageController extends Controller
     {
         $this->middleware('auth',['except'=>
         [
-            'getAll',
+            'getAll','getPackage'
     ],
     ]);
     }
