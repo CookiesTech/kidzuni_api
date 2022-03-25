@@ -65,6 +65,25 @@ class PackageController extends Controller
         
     }
 
+    public function getPackage(Request $request){
+        $validator = Validator::make($request->all(), [
+            'package_for'           => 'required',
+            'type'=>'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->formatErrorResponse($validator);
+        }
+
+        $data=DB::table('packages')->where('package_for',$request->post('package_for'))->where('type',$request->post('type'))->first();
+        if($data){
+            return response()->json(['status' => true, 'data' => $data], 200);
+        }
+        else{
+            return response()->json(['status' => false, 'message' =>'No Package found  for this !'], 200);
+        }
+    }
+
     public function delete_subject($id)
     {
         DB::table('subjects')->where('id', $id)->delete();
