@@ -24,25 +24,38 @@ class PackageController extends Controller
     public function add(Request $request)
     {       
 
-        if (!empty($request->post('data')['type'])) {
-           
-                if (DB::table('packages')->where('type', $request->post('data')['type'])->where('package_for', $request->post('data')['package_for'])->count() == 0) {
+        if (!empty($request->post('data')['type']) && $request->post('data')['package_for']) {           
+               
                    if($request->post('data')['package_for']=='parent'){
-                        DB::table('packages')->insert(['type' => $request->post('data')['type'],'package_for'=>$request->post('data')['package_for'],
-                        'price'=>$request->post('data')['price'],'additional_price'=>$request->post('data')['additional_price']]);
+                    //check package already esists in school type
+                        if (DB::table('packages')->where('type', $request->post('data')['type'])->where('package_for', $request->post('data')['package_for'])->count()==0) 
+                            {
+                                 DB::table('packages')->insert(['type' => $request->post('data')['type'],'package_for'=>$request->post('data')['package_for'],
+                                'price'=>$request->post('data')['price'],'additional_price'=>$request->post('data')['additional_price']]);
+                            }#same packeage exists
+                            else{
+                                 return response()->json([
+                            'status' => false,
+                            'message' => sprintf('%s This Package Type is already taken.', $request->post('data')['type'])
+                        ], 200);
+                            }
+                       
                    }else{
-                       DB::table('packages')->insert(['type' => $request->post('data')['type'],'package_for'=>$request->post('data')['package_for'],
-                        'minimum_count'=>$request->post('data')['student_min_count'],'maximum_count'=>$request->post('data')['student_max_count']]);
+                    //check package already esists in school type
+                        if (DB::table('packages')->where('type', $request->post('data')['type'])->where('package_for', 'school')->where('minimum_count',$request->post('data')['student_min_count'])->count()==0) 
+                        {
+                            DB::table('packages')->insert(['type' => $request->post('data')['type'],
+                            'price'=>$request->post('data')['price'],'package_for'=>$request->post('data')['package_for'],
+                            'minimum_count'=>$request->post('data')['student_min_count'],'maximum_count'=>$request->post('data')['student_max_count']]);
+                        }
+                        #package exists
+                        else{
+                            return response()->json([
+                            'status' => false,
+                            'message' => sprintf('%s This Package Type is already taken.', $request->post('data')['type'])
+                        ], 200);
+                        }
                    }
-                } else {
-                    //data exists
-                    return response()->json([
-                        'status' => false,
-                        'message' => sprintf('%s This Package Type is already taken.')
-                    ], 200);
-                }
-            
-
             return response()->json([
                 'status' => true,
                 'message' => 'Successfully Added'
@@ -50,8 +63,6 @@ class PackageController extends Controller
         }
         //no data
         else {
-
-
             return response()->json(['status' => false, 'message' => 'Input Data Cannot be Empty'], 200);
         }
     }
@@ -75,7 +86,7 @@ class PackageController extends Controller
             return $this->formatErrorResponse($validator);
         }
 
-        $data=DB::table('packages')->where('package_for',$request->post('package_for'))->where('type',$request->post('type'))->first();
+        $data=DB::table('packages')->where('package_for',$request->post('package_for'))->where('type',$request->post('type'))->get();
         if($data){
             return response()->json(['status' => true, 'data' => $data], 200);
         }
