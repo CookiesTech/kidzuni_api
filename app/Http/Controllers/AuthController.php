@@ -41,7 +41,7 @@ class AuthController extends Controller
             'password' => 'required',
             'type' => 'required',
             'package_for' => 'required',
-            'no_of_chilren' => 'required',
+            'no_of_children' => 'required',
         ]);
        
 
