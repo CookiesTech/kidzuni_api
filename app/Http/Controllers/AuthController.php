@@ -51,6 +51,12 @@ class AuthController extends Controller
 
         try {
             $plainPassword = $request->input('password');
+            $role='';
+             if($request->input('package_for')=='school'){
+                    $role=4;
+                }else{
+                    $role=3;
+                }
             DB::table('users')->insert([
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
@@ -59,7 +65,8 @@ class AuthController extends Controller
                 'no_of_children'=>$request->input('no_of_children'),
                 'subscription_type'=>$request->input('type'),
                 'package_for'=>$request->input('package_for'),
-                'role'=>3,
+                'price'=>$request->post('price'),
+               'role'=>$role,                
                 'purchased_datetime'=>date('d-m-Y H:i:s'),
                 'address'=>$request->input('address'),
                 'school_name'=>$request->input('school_name'),
