@@ -39,6 +39,9 @@ class AuthController extends Controller
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required',
+            'type' => 'required',
+            'package_for' => 'required',
+            'no_of_chilren' => 'required',
         ]);
        
 
@@ -49,11 +52,18 @@ class AuthController extends Controller
         try {
             $plainPassword = $request->input('password');
             DB::table('users')->insert([
-                'name' => $request->input('name'), 'email' => $request->input('email'),
-                'password' => app('hash')->make($plainPassword),'phone_no'=>$request->input('phone_no'),
-                'no_of_children'=>$request->input('no_of_children'),'subject_id'=>$request->input('subject_id'),
-                'subscription_type'=>$request->input('subscription_type'),'secret_id'=>sprintf("%03d", mt_rand(1, 999999)),
-                'login_type'=>'parent','role'=>3
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'password' => app('hash')->make($plainPassword),
+                'phone_no'=>$request->input('phone_no'),
+                'no_of_children'=>$request->input('no_of_children'),
+                'subscription_type'=>$request->input('type'),
+                'package_for'=>$request->input('package_for'),
+                'role'=>3,
+                'purchased_datetime'=>date('d-m-Y H:i:s'),
+                'address'=>$request->input('address'),
+                'school_name'=>$request->input('school_name'),
+
             ]);
 
 

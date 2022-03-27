@@ -70,7 +70,7 @@ class PackageController extends Controller
     public function getAll(Request $request)
     {
        
-        $data=DB::table('packages')->get();
+        $data=DB::table('packages')->orderBy('id','desc')->get();
 
         return response()->json(['status' => true, 'data' => $data], 200);
         
