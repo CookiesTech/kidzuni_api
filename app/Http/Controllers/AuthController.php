@@ -67,7 +67,7 @@ class AuthController extends Controller
                 'package_for'=>$request->input('package_for'),
                 'price'=>$request->post('price'),
                'role'=>$role,                
-                'purchased_datetime'=>date('d-m-Y H:i:s'),
+                'purchased_datetime'=>date('Y-m-d H:i:s'),
                 'address'=>$request->input('address'),
                 'school_name'=>$request->input('school_name'),
 
@@ -78,7 +78,7 @@ class AuthController extends Controller
             return response()->json(['status' => true, 'message' => 'User Registration Successfully'], 200);
         } catch (\Exception $e) {
             //return error message
-            return response()->json(['status' => false, 'message' => 'User Registration Failed!'], 409);
+            return response()->json(['status' => false, 'message' =>$e], 409);
         }
     }
     public function login(Request $request)
