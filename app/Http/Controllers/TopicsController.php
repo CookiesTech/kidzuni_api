@@ -24,7 +24,7 @@ class TopicsController extends Controller
         $sub = array();
         $child = array();
         $res = array();
-        $res['status'] = true;
+       
          $validator = Validator::make($request->all(), [
             'standard_id'           => 'required'
         ]);
@@ -58,7 +58,7 @@ $student_id=$request->post('student_id')?$request->post('student_id'):'';
             }else{
                 return response()->json(['status' => false, 'message' =>'No data found'], 200);
             }
-            return response()->json($res, 200);
+            return response()->json(['status' => true, 'data' =>$res], 200);
         } catch (\Exception $e) {
 
             return response()->json(['status' => false, 'data' => []], 200);

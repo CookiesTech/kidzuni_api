@@ -29,6 +29,7 @@ class Controller extends BaseController
         }
       
         return response()->json([
+            'status'=>true,
             'token' =>$token,
             'userId' => Auth::user()->id,
             'token_type' => 'bearer',

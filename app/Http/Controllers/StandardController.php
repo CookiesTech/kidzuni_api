@@ -60,11 +60,15 @@ class StandardController extends Controller
             $data = DB::table('standards as s')->join('countries as c','c.id','=','s.country_code')->
             where('s.country_code',$country_code)->
             select('s.id','s.standard_name','s.description','c.id as country_id')->orderBy('s.id','desc')->get();
+            if($data){
 
-            return response()->json(['status' => true, 'data' => $data], 200);
+                return response()->json(['status' => true, 'data' => $data], 200);
+            }else{
+                return response()->json(['status' => false, 'data' =>[]], 200);
+            }
         } catch (\Exception $e) {
 
-            return response()->json(['status' => false, 'data' => []], 200);
+            return response()->json(['status' => false, 'message' =>$e], 200);
         }
     }
 
