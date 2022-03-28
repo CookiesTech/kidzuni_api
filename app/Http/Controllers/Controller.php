@@ -35,16 +35,27 @@ class Controller extends BaseController
              'role' =>Auth::user()->role);
              $kids_data=DB::table('users')->where('parent_id',Auth::user()->id)->select('id','name','email','role')->get();
         }
-      
+      if(Auth::user()->role==3 || Auth::user()->role==4){
         return response()->json([
             'status'=>true,
             'token' =>$token,
             'userId' => Auth::user()->id,
             'token_type' => 'bearer',
             'expires_in' => env('SESSION_TOKEN_EXPIRY'),
-            'user' =>$user,
+            'user' =>$user,            
             'kids_data'=>$kids_data
         ], 200);
+      }else{
+          return response()->json([
+            'status'=>true,
+            'token' =>$token,
+            'userId' => Auth::user()->id,
+            'token_type' => 'bearer',
+            'expires_in' => env('SESSION_TOKEN_EXPIRY'),
+            'user' =>$user
+        ], 200);
+      }
+        
     }
 
     protected function formatErrorResponse(Validator $validator)
