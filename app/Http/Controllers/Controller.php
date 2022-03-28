@@ -6,6 +6,7 @@ use Illuminate\Validation\Validator;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
+use DB;
 
 class Controller extends BaseController
 {
@@ -20,12 +21,19 @@ class Controller extends BaseController
     }
     protected function respondWithToken($token)
     {
-        $user='';
+        $user='';$kids_data=[];
         if(Auth::user()->role==3){
-              $user = array('name' => Auth::user()->name, 'email' => Auth::user()->email,
-               'role' =>Auth::user()->role,'no_of_children'=>Auth::user()->no_of_children,'subscription_type'=>Auth::user()->subscription_type);
+              $user = array('name' => Auth::user()->name, 
+              'email' => Auth::user()->email,
+               'role' =>Auth::user()->role,
+               'no_of_children'=>Auth::user()->no_of_children,
+               'subscription_type'=>Auth::user()->subscription_type);
+            $kids_data=DB::table('users')->where('parent_id',Auth::user()->id)->select('id','name','email','role')->get();
         }else{
-             $user = array('name' => Auth::user()->name, 'email' => Auth::user()->email,'role' =>Auth::user()->role);
+             $user = array('name' => Auth::user()->name,
+             'email' => Auth::user()->email,
+             'role' =>Auth::user()->role);
+             $kids_data=DB::table('users')->where('parent_id',Auth::user()->id)->select('id','name','email','role')->get();
         }
       
         return response()->json([
@@ -34,7 +42,8 @@ class Controller extends BaseController
             'userId' => Auth::user()->id,
             'token_type' => 'bearer',
             'expires_in' => env('SESSION_TOKEN_EXPIRY'),
-            'user' =>$user
+            'user' =>$user,
+            'kids_data'=>$kids_data
         ], 200);
     }
 
