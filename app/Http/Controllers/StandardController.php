@@ -57,10 +57,11 @@ class StandardController extends Controller
     {
         $country_code=$request->post('country_code');
         try {
-            $data = DB::table('standards as s')->join('countries as c','c.id','=','s.country_code')->
-            where('s.country_code',$country_code)->
-            select('s.id','s.standard_name','s.description','c.id as country_id')->orderBy('s.id','desc')->get();
-            if($data){
+            $data = DB::table('standards as s')->join('countries as c','c.id','=','s.country_code')
+            ->where('s.country_code',$country_code)
+            ->select('s.id','s.standard_name','s.description','c.id as country_id')->orderBy('s.id','desc')->get();
+            
+            if(count($data)>0){
 
                 return response()->json(['status' => true, 'data' => $data], 200);
             }else{
