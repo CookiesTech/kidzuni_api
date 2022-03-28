@@ -47,4 +47,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('getAllpackages','PackageController@getAll');
     $router->post('add_package','PackageController@add');
     $router->post('getPackage','PackageController@getPackage');
+
+    $router->post('add_kids','ParentController@add_kids');
 });

@@ -66,10 +66,10 @@ class AuthController extends Controller
                 'subscription_type'=>$request->input('type'),
                 'package_for'=>$request->input('package_for'),
                 'price'=>$request->post('price'),
-               'role'=>$role,                
+                 'role'=>$role,                
                 'purchased_datetime'=>date('Y-m-d H:i:s'),
                 'address'=>$request->input('address'),
-                'school_name'=>$request->input('school_name'),
+                'school_name'=>$request->input('school_name')
 
             ]);
 

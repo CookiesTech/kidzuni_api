@@ -9,21 +9,31 @@ use Illuminate\Support\Facades\Auth;
 
 class Controller extends BaseController
 {
-     /**
-     * @OA\Info(
-     *    title="Student  ApplicationAPI",
-     *    version="1.0.0",
-     * )
-     */
+    public function __construct(){
+        $data = [
+            ['role' => 1, 'name' => 'SAdmin'],
+            ['role' => 2, 'name' => 'ADMIN'],
+            ['role' => 3, 'name' => 'Parent'],
+            ['role' => 4, 'name' => 'Teacher'],
+            ['role' => 5, 'name' => 'Student'],
+        ];
+    }
     protected function respondWithToken($token)
     {
-        $user = array('name' => Auth::user()->name, 'email' => Auth::user()->email, 'role' => 'SA');
+        $user='';
+        if(Auth::user()->role==3){
+              $user = array('name' => Auth::user()->name, 'email' => Auth::user()->email,
+               'role' =>Auth::user()->role,'no_of_children'=>Auth::user()->no_of_children,'subscription_type'=>Auth::user()->subscription_type);
+        }else{
+             $user = array('name' => Auth::user()->name, 'email' => Auth::user()->email,'role' =>Auth::user()->role);
+        }
+      
         return response()->json([
-            'token' => $token,
+            'token' =>$token,
             'userId' => Auth::user()->id,
             'token_type' => 'bearer',
             'expires_in' => env('SESSION_TOKEN_EXPIRY'),
-            'user' => $user
+            'user' =>$user
         ], 200);
     }
 

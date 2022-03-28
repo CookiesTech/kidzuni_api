@@ -32,7 +32,8 @@ class TeacherController extends Controller
 
         $validator = Validator::make($request->all(), [
             'firstname'           => 'required',
-            'username'           => 'required|unique:teachers'
+            'username'           => 'required|unique:teachers',
+            'email'           => 'required|unique:teachers'
         ]);
 
         if ($validator->fails()) {
