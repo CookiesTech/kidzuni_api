@@ -28,13 +28,14 @@ class TopicsController extends Controller
          $validator = Validator::make($request->all(), [
             'standard_id'           => 'required'
         ]);
-$student_id=$request->post('student_id')?$request->post('student_id'):'';
+        $student_id=$request->post('student_id')?$request->post('student_id'):'';
         if ($validator->fails()) {
             return $this->formatErrorResponse($validator);
         }
         try {
             $data = DB::table('maincategory as m')->where('m.standard_id',$request->post('standard_id'))->select('id','name')->get();
-            if($data){
+           
+            if(count($data)>0){
                 $i = 0;$score=0;
                 foreach($data as $maintopics){
                      $categroies = array('main_topic' => $maintopics->name);
@@ -42,7 +43,7 @@ $student_id=$request->post('student_id')?$request->post('student_id'):'';
                     foreach ($sub_topics as $key => $value) {
                         #no login 
                         if($student_id==''){
-                            $score=DB::table('scores')->where('subcategory_id',$value->id)->sum('score');
+                            $score=0;
                         } #user logged in
                         else{
                             $score=DB::table('scores')->where('subcategory_id',$value->id)->where('student_id',$student_id)->sum('score');
@@ -56,7 +57,7 @@ $student_id=$request->post('student_id')?$request->post('student_id'):'';
                      $i++;
                 }
             }else{
-                return response()->json(['status' => false, 'message' =>'No data found'], 200);
+                return response()->json(['status' => false, 'data' =>[]], 200);
             }
             return response()->json(['status' => true, 'data' =>$res], 200);
         } catch (\Exception $e) {

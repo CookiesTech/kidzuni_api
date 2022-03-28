@@ -55,9 +55,9 @@ class SubjectController extends Controller
 
     public function getAll(Request $request)
     {
-        $country_code=$request->post('country_code')?$request->post('country_code'):3;
+        $country_code=$request->post('country_code');
         $final_data=[];$temp=[];
-        //echo $country_code;exit;
+       
         try {
             $data = DB::table('subjects')->select('id','subject_name')->get();
             if($data){
