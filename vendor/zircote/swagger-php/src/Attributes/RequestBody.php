@@ -17,6 +17,8 @@ class RequestBody extends \OpenApi\Annotations\RequestBody
      * @param Attachable[]|null                            $attachables
      */
     public function __construct(
+        string|object|null $ref = null,
+        ?string $request = null,
         ?string $description = null,
         ?bool $required = null,
         array|JsonContent|XmlContent|null $content = null,
@@ -25,10 +27,12 @@ class RequestBody extends \OpenApi\Annotations\RequestBody
         ?array $attachables = null
     ) {
         parent::__construct([
-                'description' => $description ?? Generator::UNDEFINED,
-                'required' => $required ?? Generator::UNDEFINED,
-                'x' => $x ?? Generator::UNDEFINED,
-                'value' => $this->combine($content, $attachables),
-            ]);
+            'ref' => $ref ?? Generator::UNDEFINED,
+            'request' => $request ?? Generator::UNDEFINED,
+            'description' => $description ?? Generator::UNDEFINED,
+            'required' => $required ?? Generator::UNDEFINED,
+            'x' => $x ?? Generator::UNDEFINED,
+            'value' => $this->combine($content, $attachables),
+        ]);
     }
 }

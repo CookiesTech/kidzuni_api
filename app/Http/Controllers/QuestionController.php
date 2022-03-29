@@ -23,12 +23,12 @@ class QuestionController extends Controller
     public function getAll()
     {
         try {
-            $data = DB::table('questions')->get();
+            $data = DB::table('questions')->orderBy('id','desc')->get();
 
             return response()->json(['status' => true, 'data' => $data], 200);
         } catch (\Exception $e) {
 
-            return response()->json(['status' => false, 'data' => []], 404);
+            return response()->json(['status' => false, 'data' => []], 200);
         }
     }
 
@@ -54,7 +54,7 @@ class QuestionController extends Controller
             $startcount = 2;
             $data = array();
             $headers   = $sheet->rangeToArray('A1' . ':' . $column_limit . '1', null, true, false)[0];
-            $totalEmployeeAdded = 0;
+            $totalQuestionsAdded = 0;
             $failedToImport     = [];
 
             // if ($missingHeaders = array_diff(['first_name', 'last_name', 'email', 'mobile', 'role_id', 'profile_picture', 'department_id', 'location_id', 'designation', 'username'], $headers)) {
@@ -65,28 +65,30 @@ class QuestionController extends Controller
             // }
             if ($tota_row > 1) {
                  for ($row = 2; $row <= $tota_row; $row++) {
-                      $standard = $sheet->getCell('A' . $row)->getValue();
-                      $subcategory = $sheet->getCell('B' . $row)->getValue();
-                      $question_text = $sheet->getCell('C' . $row)->getValue();
-                      $question_image = $sheet->getCell('D' . $row)->getValue();
-                      $option1 = $sheet->getCell('E' . $row)->getValue();
-                      $option2 = $sheet->getCell('F' . $row)->getValue();
-                      $option3 = $sheet->getCell('G' . $row)->getValue();
-                      $option4 = $sheet->getCell('H' . $row)->getValue();
-                      $answer = $sheet->getCell('I' . $row)->getValue();
-                      $mark = $sheet->getCell('J' . $row)->getValue();
-                      $wrong_answermark_deduction = $sheet->getCell('K' . $row)->getValue();
+                      $subject_id = $sheet->getCell('A' . $row)->getValue();
+                      $standard = $sheet->getCell('B' . $row)->getValue();
+                      $subcategory = $sheet->getCell('C' . $row)->getValue();
+                      $country_code = $sheet->getCell('D' . $row)->getValue();
+                      $question_text = $sheet->getCell('E' . $row)->getValue();
+                      $question_image = $sheet->getCell('F' . $row)->getValue();
+                      $option1 = $sheet->getCell('G' . $row)->getValue();
+                      $option2 = $sheet->getCell('H' . $row)->getValue();
+                      $option3 = $sheet->getCell('I' . $row)->getValue();
+                      $option4 = $sheet->getCell('J' . $row)->getValue();
+                      $answer = $sheet->getCell('K' . $row)->getValue();
+                      $mark = $sheet->getCell('L' . $row)->getValue();
+                      $wrong_answermark_deduction = $sheet->getCell('M' . $row)->getValue();
 
                     $errorMessage = [];
                     if (empty($errorMessage) &&    empty($standard)) {
-                        $errorMessage[] = 'First name is required';
+                        $errorMessage[] = 'Standard name is required';
                     }
                     if (empty($errorMessage) &&    empty($subcategory)) {
-                        $errorMessage[] = 'User name is required';
+                        $errorMessage[] = 'Subcategory name is required';
                     }
                    
-                     if (empty($errorMessage) &&    empty(DB::table('subcategory')->where('name', $subcategory)->first())) {
-                        $errorMessage[] = sprintf('%s location id is Not Available. Check with superadmin', $subcategory);
+                     if (DB::table('subcategory')->where('name', $subcategory)->count()==0) {
+                        $errorMessage[] = sprintf('%s is Not Available. Check with superadmin', $subcategory);
                     }
 
                     if (!empty($errorMessage)) {
@@ -95,8 +97,10 @@ class QuestionController extends Controller
                     } else {
 
                         DB::table('questions')->insert([
+                            'subject_id'=>$subject_id,
                             'standard'=>$standard,
                             'subcategory'=>$subcategory,
+                            'country_code'=>$country_code,
                             'question_image'=>$question_image,
                             'question_text'=>$question_text,
                             'option1'=>$option1,
@@ -107,7 +111,7 @@ class QuestionController extends Controller
                             'mark'=>$mark,
                             'wrong_answer_mark'=>$wrong_answermark_deduction                                 
                         ]);
-                             $totalEmployeeAdded++;
+                             $totalQuestionsAdded++;
                     }
 
                  }
@@ -115,15 +119,15 @@ class QuestionController extends Controller
 
             } else {
                 return response()->json([
-                    'status'       => 'false',
+                    'status'       => false,
                     'message'      => 'Add minimum one row data',
                 ], 200);
             }
 
           return response()->json([
-                'status'               => 'success',
+                'status'               =>true,
                 'failed_to_import'      => $failedToImport,
-                'successfully_imported' => $totalEmployeeAdded,
+                'successfully_imported' => $totalQuestionsAdded,
             ], 200);   
         } catch (Exception $e) {
             $error_code = $e->errorInfo[1];

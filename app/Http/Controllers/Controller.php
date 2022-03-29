@@ -22,18 +22,18 @@ class Controller extends BaseController
     protected function respondWithToken($token)
     {
         $user='';$kids_data=[];
-        if(Auth::user()->role==3){
+        if(Auth::user()->role==3 ||Auth::user()->role==4){
               $user = array('name' => Auth::user()->name, 
               'email' => Auth::user()->email,
                'role' =>Auth::user()->role,
                'no_of_children'=>Auth::user()->no_of_children,
-               'subscription_type'=>Auth::user()->subscription_type);
+               'subscription_type'=>Auth::user()->subscription_type,'purchaed_date'=>Auth::user()->purchased_datetime);
             $kids_data=DB::table('users')->where('parent_id',Auth::user()->id)->select('id','name','email','role')->get();
         }else{
              $user = array('name' => Auth::user()->name,
              'email' => Auth::user()->email,
              'role' =>Auth::user()->role);
-             $kids_data=DB::table('users')->where('parent_id',Auth::user()->id)->select('id','name','email','role')->get();
+            
         }
       if(Auth::user()->role==3 || Auth::user()->role==4){
         return response()->json([

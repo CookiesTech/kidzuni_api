@@ -9,6 +9,7 @@
         "firebase/php-jwt": "^5.5",
         "laravel/lumen-framework": "^8.3.1",
         "tymon/jwt-auth": "dev-develop",
+        "phpoffice/phpspreadsheet": "^1.18",
         "zircote/swagger-php": "^4.2"
     },
     "require-dev": {

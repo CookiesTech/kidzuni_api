@@ -85,7 +85,7 @@ class Authenticate
         $token = $request->header('Authorization');
 
         if (!$token) {
-            return response()->json(['status' => 'false', 'message' => 'Token Required'], 401);
+            return response()->json(['status' => false, 'message' => 'Token Required'], 401);
         }
         $decode = $this->decode_token($token);
       
@@ -93,7 +93,7 @@ class Authenticate
         $verify_token = $this->verify_token($token);
 
         if ($verify_token == 3) {
-            return response()->json(['status' => 'false', 'message' => 'Invalid Token'], 401);
+            return response()->json(['status' => false, 'message' => 'Invalid Token'], 401);
         } else if ($verify_token == 2) {
             return response()->json([
                 'status' => 'false',

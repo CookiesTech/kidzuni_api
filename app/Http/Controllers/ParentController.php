@@ -20,6 +20,17 @@ class ParentController extends Controller
         $this->middleware('auth');
     }
 
+     public function getAllParents()
+    {
+        try {
+            $data = DB::table('users')->where('role',3)->orderBy('id','desc')->get();
+
+            return response()->json(['status' => true, 'data' => $data], 200);
+        } catch (\Exception $e) {
+
+            return response()->json(['status' => false, 'data' => []], 200);
+        }
+    }
     public function add_kids(Request $request){
      
          try {
