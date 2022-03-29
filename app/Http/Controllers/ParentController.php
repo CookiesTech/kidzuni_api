@@ -39,8 +39,9 @@ class ParentController extends Controller
                 if (count($request->input('data')) > 0) {
                     foreach ($request->input('data') as $key => $value) {
                        $added_count=DB::table('users')->where('parent_id',$request['user_id'])->count(); 
-                        #check childcount
-                       if($child_count >= $added_count)
+                       
+                       #check childcount
+                       if($child_count > $added_count)
                        {
                             if(DB::table('users')->where('email',$value['email'])->count()==0)
                             {
