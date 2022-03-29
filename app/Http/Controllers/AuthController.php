@@ -94,6 +94,52 @@ class AuthController extends Controller
         if (!$token = Auth::attempt($credentials)) {
             return response()->json(['status'=>false,'message' => 'Unauthorized'], 200);
         }
+        $purchased_date=Auth::user()->purchased_datetime;
+        $current_datetime=date('Y-m-d');
+        $type=Auth::user()->subscription_type;
+        if($type=='monthly'){
+           $date =explode(" ",$purchased_date)[0];
+            $newdate =date("Y-m-d", strtotime ( '+1 month' , strtotime ( $date ) )) ;
+            #check plan expired or not 
+             $diff= strtotime($newdate)-strtotime($current_datetime);          
+            if($diff >0){
+                 $token = $this->create_token(Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
+                return $this->respondWithToken($token);
+            }#plan expired
+            else{
+                return response()->json(['status'=>false,'message' => 'Plan Expired'], 200);
+            }
+        }#plan type Annual
+        else{
+            $date =explode(" ",$purchased_date)[0];
+            $newdate = date("Y-m-d", strtotime ( '+12 month' , strtotime ( $date ) )) ;
+           $diff= strtotime($newdate)-strtotime($current_datetime);    
+           
+           if ($diff>0){
+                 $token = $this->create_token(Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
+                return $this->respondWithToken($token);
+            }#plan expired
+            else{
+                return response()->json(['status'=>false,'message' => 'Plan Expired'], 200);
+            }
+        }
+       
+    }
+
+    public function admin_login(Request $request)
+    {
+        //validate incoming request 
+        $this->validate($request, [
+            'email' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $credentials = $request->only(['email', 'password']);
+
+        if (!$token = Auth::attempt($credentials)) {
+            return response()->json(['status'=>false,'message' => 'Unauthorized'], 200);
+        }
+        
         $token = $this->create_token(Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
         return $this->respondWithToken($token);
     }

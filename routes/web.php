@@ -7,6 +7,7 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('register', 'AuthController@register');
     $router->post('login', 'AuthController@login');
+    $router->post('admin_login', 'AuthController@admin_login');
     $router->get('profile', 'TeacherController@profile');
     $router->post('teacher_add', 'TeacherController@add');
     $router->get('getAll', 'TeacherController@getAll');
