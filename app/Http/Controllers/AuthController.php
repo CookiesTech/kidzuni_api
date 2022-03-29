@@ -15,7 +15,7 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('auth',[
-            'except'=>['login','register'],
+            'except'=>['login','register','admin_login'],
         ]);
     }
     protected function create_token($id, $expiry)
