@@ -38,6 +38,8 @@ class ParentController extends Controller
          try {
                 if (count($request->input('data')) > 0) {
                     foreach ($request->input('data') as $key => $value) {
+                    if($value['email']!='' && $value['password'] && $value['name'])
+                    {
                        $added_count=DB::table('users')->where('parent_id',$request['user_id'])->count(); 
                        
                        #check childcount
@@ -63,6 +65,12 @@ class ParentController extends Controller
                         else{
                             return response()->json(['status' => false, 'message' =>'Already kids added for you package Limit'], 200);
                         }
+
+                    }#input valuce chack if end
+                    else{
+                        return response()->json(['status' => false, 'message' =>'Fill all Kidz Info'], 200);
+                    }
+                     
                     }
                      return response()->json(['status' => true, 'message' =>'Kidz Added Successfully'], 200);
 

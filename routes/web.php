@@ -54,4 +54,5 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
 
     $router->post('getQuestionsByID','QuestionController@getQuestionsByID');
+    $router->post('getrecommendations','QuestionController@getrecommendations');
 });

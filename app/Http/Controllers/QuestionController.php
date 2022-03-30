@@ -51,9 +51,26 @@ class QuestionController extends Controller
         else{
             return response()->json(['status' => false, 'message' =>'unAuthorized'], 200);
         }
-       
+    }
 
-        
+     public function getrecommendations(Request $request)
+    
+    {
+        #check student only logged or not
+        if($request['role']==5){
+             $standard_id=$request->post('standard_id');
+            try {
+            $data = DB::table('questions')->where('standard_id',$standard_id)->inRandomOrder()->first();
+           
+            return response()->json(['status' => true, 'data' => $data], 200);
+        } catch (\Exception $e) {
+
+            return response()->json(['status' => false, 'data' => []], 200);
+        }
+        }
+        else{
+            return response()->json(['status' => false, 'message' =>'unAuthorized'], 200);
+        }
     }
 
     public function upload_question(Request $request)
@@ -120,9 +137,10 @@ class QuestionController extends Controller
                         $failedToImport[]    = $dataToAdd;
                     } else {
                         $subcategory_id=DB::table('subcategory')->where('name', $subcategory)->select('id')->first();
+                        $standard=DB::table('standards')->where('name', $standard)->select('id')->first();
                         DB::table('questions')->insert([
                             'subject_id'=>$subject_id,
-                            'standard'=>$standard,
+                            'standard_id'=>$standard->id,
                             'subcategory'=>$subcategory,
                             'subcategory_id'=>$subcategory_id->id,
                             'country_code'=>$country_code,
