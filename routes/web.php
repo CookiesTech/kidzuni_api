@@ -51,4 +51,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('add_kids','ParentController@add_kids');
     $router->get('getAllParents','ParentController@getAllParents');
+
+
+    $router->post('getQuestionsByID','QuestionController@getQuestionsByID');
 });

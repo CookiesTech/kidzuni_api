@@ -89,7 +89,7 @@ class Authenticate
         }
         $decode = $this->decode_token($token);
       
-        $request['user_id'] = $decode->user_id;
+        $request['user_id'] = $decode->user_id;$request['role'] = $decode->role;
         $verify_token = $this->verify_token($token);
 
         if ($verify_token == 3) {

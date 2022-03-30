@@ -9,7 +9,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-
+use Illuminate\Support\Facades\Auth;
 class QuestionController extends Controller
 {
 
@@ -30,6 +30,30 @@ class QuestionController extends Controller
 
             return response()->json(['status' => false, 'data' => []], 200);
         }
+    }
+
+    public function getQuestionsByID(Request $request)
+    
+    {
+        #check student only logged or not
+        if($request['role']==5){
+             $subcategory_id=$request->post('subcategory_id');
+            try {
+            $data = DB::table('questions')->where('subcategory_id',$subcategory_id)->orderBy('id','desc')->get();
+            $score=DB::table('scores')->where('subcategory_id',$subcategory_id)->sum('score');
+
+            return response()->json(['status' => true, 'data' => $data,'score'=>$score], 200);
+        } catch (\Exception $e) {
+
+            return response()->json(['status' => false, 'data' => []], 200);
+        }
+        }
+        else{
+            return response()->json(['status' => false, 'message' =>'unAuthorized'], 200);
+        }
+       
+
+        
     }
 
     public function upload_question(Request $request)
@@ -95,11 +119,12 @@ class QuestionController extends Controller
                         $dataToAdd['errors'] = implode('<br>', $errorMessage);
                         $failedToImport[]    = $dataToAdd;
                     } else {
-
+                        $subcategory_id=DB::table('subcategory')->where('name', $subcategory)->select('id')->first();
                         DB::table('questions')->insert([
                             'subject_id'=>$subject_id,
                             'standard'=>$standard,
                             'subcategory'=>$subcategory,
+                            'subcategory_id'=>$subcategory_id->id,
                             'country_code'=>$country_code,
                             'question_image'=>$question_image,
                             'question_text'=>$question_text,

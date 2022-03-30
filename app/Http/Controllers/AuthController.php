@@ -18,15 +18,17 @@ class AuthController extends Controller
             'except'=>['login','register','admin_login'],
         ]);
     }
-    protected function create_token($id, $expiry)
+    protected function create_token($role,$id,$expiry)
     {
+       
         $total_time = $expiry;
         $payload = [
 
             'iss' => "lumen-jwt", // Issuer of the token
             'user_id' => $id, // Subject of the token
             'iat' => time(), // Time when JWT was issued. 
-            'exp' => time() +  $total_time // Expiration time
+            'exp' => time() +  $total_time, // Expiration time,
+            'role'=>$role
         ];
 
 
@@ -94,7 +96,16 @@ class AuthController extends Controller
         if (!$token = Auth::attempt($credentials)) {
             return response()->json(['status'=>false,'message' => 'Unauthorized'], 200);
         }
-        $purchased_date=Auth::user()->purchased_datetime;
+        $purchased_date='';
+        #if student get parent purchase date
+        if(Auth::user()->role==5){
+            $getparent_id=DB::table('users')->where('id',Auth::user()->parent_id)
+                            ->select('purchased_datetime')->first();
+                            $purchased_date=$getparent_id->purchased_datetime;
+        }else{
+            $purchased_date=Auth::user()->purchased_datetime;
+        }
+        
         $current_datetime=date('Y-m-d');
         $type=Auth::user()->subscription_type;
         if($type=='monthly'){
@@ -103,7 +114,8 @@ class AuthController extends Controller
             #check plan expired or not 
              $diff= strtotime($newdate)-strtotime($current_datetime);          
             if($diff >0){
-                 $token = $this->create_token(Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
+                
+                 $token = $this->create_token(Auth::user()->role,Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
                 return $this->respondWithToken($token);
             }#plan expired
             else{
@@ -116,7 +128,8 @@ class AuthController extends Controller
            $diff= strtotime($newdate)-strtotime($current_datetime);    
            
            if ($diff>0){
-                 $token = $this->create_token(Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
+                 $token = $this->create_token(Auth::user()->role,Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
+               
                 return $this->respondWithToken($token);
             }#plan expired
             else{
