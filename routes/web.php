@@ -15,7 +15,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('get_teacherProfile/{id}', 'TeacherController@get_teacherProfile');
     $router->post('teacher_update', 'TeacherController@update');
     $router->post('delete_teacher/{id}', 'TeacherController@delete_teacher');
-
+    $router->post('/getStandardandSubjects','StandardController@getStandardandSubjects');
     $router->post('/add_subject', 'SubjectController@add');
     $router->post('/getAllSubjects', 'SubjectController@getAll');
     $router->get('/delete_subject/{id}', 'SubjectController@delete_subject');

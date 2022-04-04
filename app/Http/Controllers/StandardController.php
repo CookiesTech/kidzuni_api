@@ -13,7 +13,7 @@ class StandardController extends Controller
     {
         $this->middleware('auth', [
             'except' => [
-                'getAll',
+                'getAll','getStandardandSubjects'
 
             ],
         ]);
@@ -53,6 +53,58 @@ class StandardController extends Controller
         }
     }
 
+    public function getStandardandSubjects(Request $request){
+        
+        
+         $categroies = array();
+        $sub_categroies = array();
+        $sub = array();
+        $child = array();
+        $res = array();
+       
+         $validator = Validator::make($request->all(), [
+            'country_code'           => 'required'
+        ]);
+        
+        if ($validator->fails()) {
+            return $this->formatErrorResponse($validator);
+        }
+         $country_code=$request->post('country_code');
+        try {
+            $data = DB::table('standards as s')->where('s.country_code',$country_code)->select('id','standard_name as name','description')->get();
+          
+            if(count($data)>0){
+                $i = 0;
+                foreach($data as $std){
+                     $categroies = array('standard_name' => $std->name,'id'=>$std->id,'description'=>$std->description);
+                     $subjects=DB::table('subjects')->where('standard_id',$std->id)->select('id','subject_name')->get();
+                  
+                     foreach ($subjects as $key => $value) {
+                          
+                            $score=DB::table('subcategory')
+                            ->where('subject_id',$value->id)
+                            ->where('standard_id',$std->id)
+                            ->where('country_code',$country_code)->count();
+                                           
+                        $value->count=$score;
+                        $sub['subjects'][] = $value;
+                    }
+                    
+                     $sub['subjects'] = $sub['subjects'];
+                    $res['standards'][$i] = array_merge($categroies, $sub);
+                     $i++;
+                }
+            }else{
+                return response()->json(['status' => false, 'data' =>[]], 200);
+            }
+            return response()->json(['status' => true, 'data' =>$res], 200);
+        } catch (\Exception $e) {
+ 
+
+            return response()->json(['status' => false, 'message' =>json_encode($e)], 200);
+        }
+    }
+
     public function getAll(Request $request)
     {
         $country_code=$request->post('country_code');
@@ -68,7 +120,6 @@ class StandardController extends Controller
                 return response()->json(['status' => false, 'data' =>[]], 200);
             }
         } catch (\Exception $e) {
-
             return response()->json(['status' => false, 'message' =>$e], 200);
         }
     }

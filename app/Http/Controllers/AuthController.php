@@ -67,6 +67,7 @@ class AuthController extends Controller
                 'no_of_children'=>$request->input('no_of_children'),
                 'subscription_type'=>$request->input('type'),
                 'package_for'=>$request->input('package_for'),
+                'country_code'=>$request->input('country_code'),
                 'price'=>$request->post('price'),
                  'role'=>$role,                
                 'purchased_datetime'=>date('Y-m-d H:i:s'),
