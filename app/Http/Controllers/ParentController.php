@@ -44,7 +44,7 @@ class ParentController extends Controller
                             $added_count=DB::table('users')->where('parent_id',$request['user_id'])->count(); 
                             
                             #check childcount
-                            if($child_count > $added_count)
+                            if($child_count >= $added_count)
                             {
                                     if(DB::table('users')->where('email',$value['email'])->count()==0)
                                     {
