@@ -39,7 +39,7 @@ class QuestionController extends Controller
         if($request['role']==5){
              $subcategory_id=$request->post('subcategory_id');
             try {
-            $data = DB::table('questions')->where('subcategory_id',$subcategory_id)->orderBy('id','desc')->get();
+            $data = DB::table('questions')->where('subcategory_id',$subcategory_id)->orderBy('id','desc')->inRandomOrder()->get();
             $score=DB::table('scores')->where('subcategory_id',$subcategory_id)->sum('score');
 
             return response()->json(['status' => true, 'data' => $data,'score'=>$score], 200);
