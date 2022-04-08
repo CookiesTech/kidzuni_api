@@ -15,7 +15,7 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('auth',[
-            'except'=>['login','register','admin_login'],
+            'except'=>['login','register','admin_login','forgot_password','update_password'],
         ]);
     }
     protected function create_token($role,$id,$expiry)
@@ -91,7 +91,7 @@ class AuthController extends Controller
             'email' => 'required|string',
             'password' => 'required|string',
         ]);
-
+        
         $credentials = $request->only(['email', 'password']);
 
         if (!$token = Auth::attempt($credentials)) {
@@ -147,7 +147,7 @@ class AuthController extends Controller
             'email' => 'required|string',
             'password' => 'required|string',
         ]);
-
+        
         $credentials = $request->only(['email', 'password']);
 
         if (!$token = Auth::attempt($credentials)) {
@@ -156,5 +156,49 @@ class AuthController extends Controller
         
         $token = $this->create_token(Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
         return $this->respondWithToken($token);
+    }
+
+    public function forgot_password(Request $request){
+       
+         $validator = Validator::make($request->all(), [
+           
+            'email' => 'required|string',
+        ]);
+        
+        if ($validator->fails()) {
+            return $this->formatErrorResponse($validator);
+        }
+         $email=$request->post('email');
+         $user_data=DB::table('users')->where('email',$email)->select('id','email')->first();
+         
+         if(!empty($user_data)){
+            return response()->json(['status'=>true,'data' =>$user_data], 200);
+         }else{
+             return response()->json(['status'=>false,'message' => 'Email Not Found!'], 200);
+         }
+    }
+
+    public function update_password(Request $request){
+       
+         $validator = Validator::make($request->all(), [
+           
+            'id' => 'required',
+            'password' => 'required|string',
+        ]);
+        
+        if ($validator->fails()) {
+            return $this->formatErrorResponse($validator);
+        }
+          $id=$request->post('id');
+         
+          $plainPassword = $request->input('password');
+          
+         $user_data=User::where('id',$id)->update(['password'=>app('hash')->make($plainPassword)]);         
+          
+         if($user_data){
+            return response()->json(['status'=>true,'message' =>'Password Updated Successfully'], 200);
+         }else{
+             return response()->json(['status'=>false,'message' => 'Error on Update!'], 200);
+         }
     }
 }
