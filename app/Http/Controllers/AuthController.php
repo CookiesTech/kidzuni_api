@@ -189,7 +189,10 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return $this->formatErrorResponse($validator);
         }
-          $id=$request->post('id');
+        #check user exists
+        if(DB::table('users')->where('id',$id)->count()>0)
+        {
+                $id=$request->post('id');
          
           $plainPassword = $request->input('password');
           
@@ -200,5 +203,11 @@ class AuthController extends Controller
          }else{
              return response()->json(['status'=>false,'message' => 'Error on Update!'], 200);
          }
+        }
+        #user does not exists
+        else{
+            return response()->json(['status'=>false,'message' => 'User Id not Found'], 200);
+        }
+          
     }
 }
