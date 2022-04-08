@@ -189,10 +189,11 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return $this->formatErrorResponse($validator);
         }
+        $id=$request->post('id');
         #check user exists
         if(DB::table('users')->where('id',$id)->count()>0)
         {
-                $id=$request->post('id');
+                
          
           $plainPassword = $request->input('password');
           
