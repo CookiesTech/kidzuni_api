@@ -90,8 +90,8 @@ class StandardController extends Controller
                         $sub['subjects'][] = $value;
                     }
                     
-                     $sub['subjects'] = $sub['subjects'];
-                    $res['standards'][$i] = array_merge($categroies, $sub);
+                     $sub1['subjects'] = $sub;
+                    $res['standards'][$i] = array_merge($categroies, $sub1);
                      $i++;
                 }
             }else{
@@ -100,7 +100,7 @@ class StandardController extends Controller
             return response()->json(['status' => true, 'data' =>$res], 200);
         } catch (\Exception $e) {
  
-
+           
             return response()->json(['status' => false, 'message' =>json_encode($e)], 200);
         }
     }

@@ -192,8 +192,7 @@ class AuthController extends Controller
         $id=$request->post('id');
         #check user exists
         if(DB::table('users')->where('id',$id)->count()>0)
-        {
-                
+        {               
          
           $plainPassword = $request->input('password');
           
