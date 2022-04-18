@@ -28,7 +28,7 @@ class TopicsController extends Controller
          $validator = Validator::make($request->all(), [
             'standard_id'           => 'required'
         ]);
-        $student_id=$request->post('student_id')?$request->post('student_id'):'';
+        $student_id=$request->post('student_id');
         if ($validator->fails()) {
             return $this->formatErrorResponse($validator);
         }
