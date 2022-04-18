@@ -107,11 +107,11 @@ class StandardController extends Controller
 
     public function getAll(Request $request)
     {
-        $country_code=$request->post('country_code');
+        $country_code=$request->post('country_code')?:3;
         try {
             $data = DB::table('standards as s')->join('countries as c','c.id','=','s.country_code')
-            ->where('s.country_code',$country_code)
-            ->select('s.id','s.standard_name','s.description','c.id as country_id')->orderBy('s.id','desc')->get();
+           // ->where('s.country_code',$country_code)
+            ->select('s.id','s.standard_name','s.description','c.id as country_id','c.image','c.code as country_code')->orderBy('s.id','desc')->get();
             
             if(count($data)>0){
 

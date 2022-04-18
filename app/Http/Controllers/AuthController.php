@@ -154,7 +154,7 @@ class AuthController extends Controller
             return response()->json(['status'=>false,'message' => 'Unauthorized'], 200);
         }
         
-        $token = $this->create_token(Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
+        $token = $this->create_token(Auth::user()->role,Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
         return $this->respondWithToken($token);
     }
 

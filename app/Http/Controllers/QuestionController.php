@@ -20,6 +20,12 @@ class QuestionController extends Controller
         ]);
     }
 
+    public function insert_quiztestdata(Request $request)
+    {
+        $student_id=$request['user_id'];
+        print_r($request->post());
+    }
+
     public function getAll()
     {
         try {
