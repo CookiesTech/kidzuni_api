@@ -59,4 +59,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('getrecommendations','QuestionController@getrecommendations');
 
     $router->post('insert_quiztestdata','QuestionController@insert_quiztestdata');
+    $router->post('getTestResults','QuestionController@getTestResults');
+
+    $router->post('getAnalytics','AnalyticsController@getAnalytics');
+
 });

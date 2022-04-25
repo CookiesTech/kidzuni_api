@@ -22,8 +22,36 @@ class QuestionController extends Controller
 
     public function insert_quiztestdata(Request $request)
     {
+        
         $student_id=$request['user_id'];
-        print_r($request->post());
+        $subcategory_id=$request->post('subcategory_id');
+       
+        if(DB::table('test_history')->where('student_id',$student_id)->where('question_id',$request->post('question_id'))->count()==0){
+              DB::table('test_history')->insert([
+            'question_id'=>$request->post('question_id'),
+            'student_id'=>$student_id,
+            'subcategory_id'=>$subcategory_id,
+            'correct_answer'=>$request->post('correct_answer'),
+            'student_answer'=>$request->post('student_answer')
+            ]);
+        
+            DB::table('scores')->where('student_id',$student_id)->where('subcategory_id',$subcategory_id)->delete();
+            
+            DB::table('scores')->insert([
+                'student_id'=>$student_id,
+                'subcategory_id'=>$subcategory_id,
+                'score'=>$request->post('score'),
+                'time_spent'=>$request->post('time')
+            ]);
+             $score=DB::table('scores')->where('student_id',$student_id)->where('subcategory_id',$subcategory_id)->select('score')->first();
+            return response()->json(['status' => true, 'score' =>$score->score], 200);
+        }
+        else{
+            $score=DB::table('scores')->where('student_id',$student_id)->where('subcategory_id',$subcategory_id)->select('score')->first();
+                return response()->json(['status' => true,  'score' =>$score->score], 200);
+        }
+      
+        
     }
 
     public function getAll()
@@ -41,17 +69,41 @@ class QuestionController extends Controller
     public function getQuestionsByID(Request $request)
     
     {
+         $subcategory_id=$request->post('subcategory_id');
+         $get_existing_attnd_question=DB::table('test_history')
+                ->where('student_id',$request['user_id'])
+                ->where('subcategory_id',$subcategory_id)
+                ->pluck('question_id');
+          $res=json_decode(json_encode($get_existing_attnd_question,true));
+         $get_existing_attnd_question=$res;
         #check student only logged or not
         if($request['role']==5){
-             $subcategory_id=$request->post('subcategory_id');
+            
             try {
-            $data = DB::table('questions')->where('subcategory_id',$subcategory_id)->inRandomOrder()->get();
-            $score=DB::table('scores')->where('subcategory_id',$subcategory_id)->sum('score');
-
-            return response()->json(['status' => true, 'data' => $data,'score'=>$score], 200);
+                $data=[];
+                #check whethet the student attended test for same topic or not
+               if($get_existing_attnd_question){
+                     $data = DB::table('questions')->where('subcategory_id',$subcategory_id)
+                     ->whereNotIn('id',$get_existing_attnd_question)
+                     ->inRandomOrder()
+                     ->get();
+                    
+               }
+               else{
+                    $data = DB::table('questions')->where('subcategory_id',$subcategory_id)->inRandomOrder()->get();
+               }
+           
+                $score=DB::table('scores')->where('subcategory_id',$subcategory_id)->where('student_id',$request['user_id'])->sum('score');
+               if($data){
+                     return response()->json(['status' => true, 'data' => $data,'score'=>$score], 200);
+               }
+               #no New Questions Found he attend all
+               else{
+                    return response()->json(['status' => false], 200);
+               }
             } catch (\Exception $e) {
 
-                return response()->json(['status' => false, 'data' => []], 200);
+                return response()->json(['status' => false], 200);
             }
         }
         else{
@@ -59,6 +111,15 @@ class QuestionController extends Controller
         }
     }
 
+
+    public function getTestResults(Request $request){
+        $student_id=$request['user_id'];
+        $subcategory_id=$request->post('subcategory_id');
+        $subcategory_name=DB::table('subcategory')->where('id',$subcategory_id)->select('name')->first();
+        $score_details=DB::table('scores')->where('student_id',$student_id)
+                        ->where('subcategory_id',$subcategory_id)
+                        ->select('score','time_spent')->first();
+    }
      public function getrecommendations(Request $request)
     
     {

@@ -34,7 +34,7 @@ class TopicsController extends Controller
         }
         try {
             $data = DB::table('maincategory as m')->where('m.standard_id',$request->post('standard_id'))->select('id','name')->get();
-           
+           //print_r($data);exit;
             if(count($data)>0){
                 $i = 0;$score=0;
                 foreach($data as $maintopics){
