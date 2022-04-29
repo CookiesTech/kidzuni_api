@@ -41,6 +41,8 @@ class QuestionController extends Controller
                 'student_id'=>$student_id,
                 'subcategory_id'=>$subcategory_id,
                 'score'=>$request->post('score'),
+                'standard_id'=>$request->post('standard_id'),
+                'subject_id'=>$request->post('subject_id'),
                 'time_spent'=>$request->post('time')
             ]);
              $score=DB::table('scores')->where('student_id',$student_id)->where('subcategory_id',$subcategory_id)->select('score')->first();
@@ -120,25 +122,7 @@ class QuestionController extends Controller
                         ->where('subcategory_id',$subcategory_id)
                         ->select('score','time_spent')->first();
     }
-     public function getrecommendations(Request $request)
-    
-    {
-        #check student only logged or not
-        if($request['role']==5){
-             $standard_id=$request->post('standard_id');
-            try {
-            $data = DB::table('questions')->where('standard_id',$standard_id)->inRandomOrder()->first();
-           
-            return response()->json(['status' => true, 'data' => $data], 200);
-        } catch (\Exception $e) {
-
-            return response()->json(['status' => false, 'data' => []], 200);
-        }
-        }
-        else{
-            return response()->json(['status' => false, 'message' =>'unAuthorized'], 200);
-        }
-    }
+     
 
     public function upload_question(Request $request)
     {
@@ -184,8 +168,9 @@ class QuestionController extends Controller
                       $option3 = $sheet->getCell('I' . $row)->getValue();
                       $option4 = $sheet->getCell('J' . $row)->getValue();
                       $answer = $sheet->getCell('K' . $row)->getValue();
-                      $mark = $sheet->getCell('L' . $row)->getValue();
-                      $wrong_answermark_deduction = $sheet->getCell('M' . $row)->getValue();
+                    //   $mark = $sheet->getCell('L' . $row)->getValue();
+                    //   $wrong_answermark_deduction = $sheet->getCell('M' . $row)
+                   
 
                     $errorMessage = [];
                     if (empty($errorMessage) &&    empty($standard)) {
@@ -204,13 +189,15 @@ class QuestionController extends Controller
                         $failedToImport[]    = $dataToAdd;
                     } else {
                         $subcategory_id=DB::table('subcategory')->where('name', $subcategory)->select('id')->first();
-                        $standard=DB::table('standards')->where('name', $standard)->select('id')->first();
+                        $standard=DB::table('standards')->where('standard_name', $standard)->select('id')->first();
+                         $subject=DB::table('subjects')->where('subject_name', $subject_id)->select('id')->first();
+                          $country=DB::table('countries')->where('name', $country_code)->select('id')->first();
                         DB::table('questions')->insert([
-                            'subject_id'=>$subject_id,
+                            'subject_id'=>$subject->id,
                             'standard_id'=>$standard->id,
                             'subcategory'=>$subcategory,
                             'subcategory_id'=>$subcategory_id->id,
-                            'country_code'=>$country_code,
+                            'country_code'=>$country->id,
                             'question_image'=>$question_image,
                             'question_text'=>$question_text,
                             'option1'=>$option1,
@@ -218,8 +205,8 @@ class QuestionController extends Controller
                             'option3'=>$option3,
                             'option4'=>$option4,
                             'answer'=>$answer,
-                            'mark'=>$mark,
-                            'wrong_answer_mark'=>$wrong_answermark_deduction                                 
+                            //'mark'=>$mark,
+                           // 'wrong_answer_mark'=>$wrong_answermark_deduction                                 
                         ]);
                              $totalQuestionsAdded++;
                     }

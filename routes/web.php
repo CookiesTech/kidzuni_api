@@ -56,11 +56,16 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
 
     $router->post('getQuestionsByID','QuestionController@getQuestionsByID');
-    $router->post('getrecommendations','QuestionController@getrecommendations');
 
     $router->post('insert_quiztestdata','QuestionController@insert_quiztestdata');
     $router->post('getTestResults','QuestionController@getTestResults');
-
+#AnalyticsPart
     $router->post('getAnalytics','AnalyticsController@getAnalytics');
-
+    $router->post('analysticsProgress','AnalyticsController@analysticsProgress');
+    $router->post('/getQuestionLog','AnalyticsController@getQuestionLog');
+    $router->post('analyticsFetchSubjectandStandard','AnalyticsController@analyticsFetchSubjectandStandard');
+#Learning Part
+    $router->post('getrecommendations','LearningController@getrecommendations');
+    $router->post('getLearningStandardMaths','LearningController@getLearningStandardMaths');
+    $router->get('learning_awards','LearningController@learning_awards');
 });

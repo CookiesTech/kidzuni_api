@@ -22,8 +22,8 @@ class SubCategoryController extends Controller
 
             foreach ($request->post('data') as $key => $value) {
 
-                if (DB::table('subcategory')->where('name', $value['category_name'])->where('mc_id', $request->post('mc_id'))->where('subject_id', $request->post('subject_id'))->count() == 0) {
-                    DB::table('subcategory')->insert(['name' => $value['category_name'], 'mc_id' => $request->post('mc_id'), 'subject_id' => $request->post('subject_id')]);
+                if (DB::table('subcategory')->where('name', $value['category_name'])->where('mc_id', $request->post('mc_id'))->where('subject_id', $request->post('subject_id'))->where('country_code', $request->post('country_code'))->count() == 0) {
+                    DB::table('subcategory')->insert(['name' => $value['category_name'], 'mc_id' => $request->post('mc_id'), 'subject_id' => $request->post('subject_id'),'country_code'=>$request->post('country_code')]);
                 } else {
                     //data exists
 

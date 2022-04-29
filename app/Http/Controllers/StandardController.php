@@ -77,7 +77,7 @@ class StandardController extends Controller
                 $i = 0;
                 foreach($data as $std){
                      $categroies = array('standard_name' => $std->name,'id'=>$std->id,'description'=>$std->description);
-                     $subjects=DB::table('subjects')->where('standard_id',$std->id)->select('id','subject_name')->get();
+                     $subjects=DB::table('subjects')->where('standard_id',$std->id)->where('country_code',$country_code)->select('id','subject_name')->get();
                   
                      foreach ($subjects as $key => $value) {
                           
@@ -107,11 +107,14 @@ class StandardController extends Controller
 
     public function getAll(Request $request)
     {
-        $country_code=$request->post('country_code')?:3;
+        $country_code=$request->post('country_code');
+       
         try {
             $data = DB::table('standards as s')->join('countries as c','c.id','=','s.country_code')
-           // ->where('s.country_code',$country_code)
-            ->select('s.id','s.standard_name','s.description','c.id as country_id','c.image','c.code as country_code')->orderBy('s.id','desc')->get();
+                    ->where('s.country_code',$country_code)
+                    ->select('s.id','s.standard_name','s.description','c.id as country_id','c.image','c.code as country_code')
+                    ->orderBy('s.id','desc')
+                    ->get();
             
             if(count($data)>0){
 
