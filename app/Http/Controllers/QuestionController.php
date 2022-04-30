@@ -31,6 +31,8 @@ class QuestionController extends Controller
             'question_id'=>$request->post('question_id'),
             'student_id'=>$student_id,
             'subcategory_id'=>$subcategory_id,
+            'standard_id'=>$request->post('standard_id'),
+            'subject_id'=>$request->post('subject_id'),
             'correct_answer'=>$request->post('correct_answer'),
             'student_answer'=>$request->post('student_answer')
             ]);

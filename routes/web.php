@@ -60,9 +60,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('insert_quiztestdata','QuestionController@insert_quiztestdata');
     $router->post('getTestResults','QuestionController@getTestResults');
 #AnalyticsPart
-    $router->post('getAnalytics','AnalyticsController@getAnalytics');
+    $router->post('getAnalysticsUsage','AnalyticsController@getAnalysticsUsage');
     $router->post('analysticsProgress','AnalyticsController@analysticsProgress');
-    $router->post('/getQuestionLog','AnalyticsController@getQuestionLog');
+    $router->post('/analyticsQuestionLog','AnalyticsController@analyticsQuestionLog');
     $router->post('analyticsFetchSubjectandStandard','AnalyticsController@analyticsFetchSubjectandStandard');
 #Learning Part
     $router->post('getrecommendations','LearningController@getrecommendations');

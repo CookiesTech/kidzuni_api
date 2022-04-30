@@ -54,56 +54,52 @@ class StandardController extends Controller
     }
 
     public function getStandardandSubjects(Request $request){
-        
-        
-         $categroies = array();
-        $sub_categroies = array();
-        $sub = array();
-        $child = array();
-        $res = array();
-       
-         $validator = Validator::make($request->all(), [
-            'country_code'           => 'required'
-        ]);
-        
-        if ($validator->fails()) {
-            return $this->formatErrorResponse($validator);
-        }
-         $country_code=$request->post('country_code');
-        try {
-            $data = DB::table('standards as s')->where('s.country_code',$country_code)->select('id','standard_name as name','description')->get();
-          
-            if(count($data)>0){
-                $i = 0;
-                foreach($data as $std){
-                     $categroies = array('standard_name' => $std->name,'id'=>$std->id,'description'=>$std->description);
-                     $subjects=DB::table('subjects')->where('standard_id',$std->id)->where('country_code',$country_code)->select('id','subject_name')->get();
+          $res['standards'] = array();       
+       $subTopics=[]; 
+            $data = DB::table('standards as s')            
+                    ->where('s.country_code',$request->post('country_code'))     
+                    ->select('s.id','s.standard_name as name','description')->get();
+            
+      
+            if(count($data)>0)
+            {
+                $score=0;
+                foreach($data as $maintopics)
+                {
+                    $subTopics=DB::table('subjects as sc')
+                                ->where('sc.standard_id',$maintopics->id)
+                                ->where('sc.country_code',$request->post('country_code'))
+                                ->groupBy('sc.subject_name','sc.id')
+                                ->select('sc.id','sc.subject_name')
+                                ->get();
+                $res['standards'][]=array('standard_name'=>$maintopics->name, 'id'=>$maintopics->id,'description'=>$maintopics->description,
+                'subjects'=>$subTopics);
+                               
+                } #maintopic lop end
+               foreach ($res['standards'] as $key => $value) {
                   
-                     foreach ($subjects as $key => $value) {
-                          
-                            $score=DB::table('subcategory')
-                            ->where('subject_id',$value->id)
-                            ->where('standard_id',$std->id)
-                            ->where('country_code',$country_code)->count();
-                                           
-                        $value->count=$score;
-                        $sub['subjects'][] = $value;
-                    }
+                  foreach ($value['subjects'] as $key => $subtopics) {
                     
-                     $sub1['subjects'] = $sub;
-                    $res['standards'][$i] = array_merge($categroies, $sub1);
-                     $i++;
-                }
-            }else{
+                          $getcount=DB::table('subcategory')
+                                ->where('country_code',$request->post('country_code'))
+                                    ->where('subject_id',$subtopics->id)
+                                    ->where('standard_id',$value['id'])
+                                    ->groupBy('subject_id')
+                                    ->count();
+                           $subtopics->count=$getcount;
+
+                  }
+               }
+
+
+            }
+            else{
                 return response()->json(['status' => false, 'data' =>[]], 200);
             }
             return response()->json(['status' => true, 'data' =>$res], 200);
-        } catch (\Exception $e) {
- 
-           
-            return response()->json(['status' => false, 'message' =>json_encode($e)], 200);
-        }
+       
     }
+    
 
     public function getAll(Request $request)
     {

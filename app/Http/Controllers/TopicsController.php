@@ -22,7 +22,7 @@ class TopicsController extends Controller
        
         $res['Topics'] = array();       
          $validator = Validator::make($request->all(), [
-            'standard_id'           => 'required'
+            'standard_id' => 'required'
         ]);
         $student_id=$request->post('student_id');
         if ($validator->fails()) {
