@@ -32,9 +32,9 @@ class ParentController extends Controller
         }
     }
     public function add_kids(Request $request){
-     $no_of_children=DB::table('users')->where('id',$request['user_id'])->select('no_of_children as child')->first();
+     $no_of_children=DB::table('users')->where('id',$request['user_id'])->select('no_of_children as child','country_code')->first();
      $child_count=$no_of_children->child;
-
+  
          try {
                 if (count($request->input('data')) > 0) {
                     foreach ($request->input('data') as $key => $value) 
@@ -54,6 +54,7 @@ class ParentController extends Controller
                                             'email'=>$value['email'],
                                             'password'=>app('hash')->make($plainPassword),
                                             'parent_id'=>$request['user_id'],
+                                            'country_code'=>$no_of_children->country_code,
                                             'role'=>5                            
                                             ]);
                                         }
