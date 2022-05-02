@@ -209,18 +209,19 @@ class AnalyticsController extends Controller
     public function analysticsProgress(Request $request){
         $student_id=$request['user_id'];//->whereBetween('score',[80,99])
         $progressData=DB::table('scores')->where('student_id',$student_id)->get();
-       // print_r($progressData);exit;
+      
         $final_result = array();
         if($progressData){
           
             foreach ($progressData as $key => $progress) {
                 $finalData=DB::table('subcategory as sub')
                                 ->where('sub.id',$progress->subcategory_id)
+                                ->where('scores.student_id',$student_id)
                                 ->join('scores','scores.subcategory_id','=','sub.id')
                                 ->select('sub.name','scores.subcategory_id','scores.score','scores.time_spent')
                                 ->get();
                 foreach($finalData as $final){                                    
-                    $count=DB::table('test_history')->where('subcategory_id',$final->subcategory_id)->count();
+                    $count=DB::table('test_history')->where('subcategory_id',$final->subcategory_id)->where('student_id',$student_id)->count();
                     $final->total_attn=$count;
                     $final_result[] = $final;
                 }
