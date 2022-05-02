@@ -75,7 +75,7 @@ class ParentController extends Controller
                      
                     }#foreach end
                      $no_of_children=DB::table('users')->where('parent_id',$request['user_id'])->count();
-                      $kidz_data=DB::table('users')->where('parent_id',$request['user_id'])->get();
+                      $kidz_data=DB::table('users')->where('parent_id',$request['user_id'])->select('id','name','email','role')->get();
                      
                      return response()->json(['status' => true, 'message' =>'Kidz Added Successfully','filled_count'=>$no_of_children,'data'=>$kidz_data], 200);
 
