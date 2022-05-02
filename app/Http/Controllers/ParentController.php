@@ -68,15 +68,16 @@ class ParentController extends Controller
                                     return response()->json(['status' => false, 'message' =>'Already kids added for you package Limit'], 200);
                                 }
 
-                            }#input valuce chack if end
+                            }#input value check if end
                             else{
                                 return response()->json(['status' => false, 'message' =>'Fill all Kidz Info'], 200);
                                 }
                      
                     }#foreach end
                      $no_of_children=DB::table('users')->where('parent_id',$request['user_id'])->count();
+                      $kidz_data=DB::table('users')->where('parent_id',$request['user_id'])->get();
                      
-                     return response()->json(['status' => true, 'message' =>'Kidz Added Successfully','filled_count'=>$no_of_children], 200);
+                     return response()->json(['status' => true, 'message' =>'Kidz Added Successfully','filled_count'=>$no_of_children,'data'=>$kidz_data], 200);
 
                 }#no data if end
                 else{

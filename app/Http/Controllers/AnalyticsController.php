@@ -207,8 +207,9 @@ class AnalyticsController extends Controller
     }
 
     public function analysticsProgress(Request $request){
-        $student_id=$request['user_id'];
-        $progressData=DB::table('scores')->where('student_id',$student_id)->whereBetween('score',[80,99])->get();
+        $student_id=$request['user_id'];//->whereBetween('score',[80,99])
+        $progressData=DB::table('scores')->where('student_id',$student_id)->get();
+       // print_r($progressData);exit;
         $final_result = array();
         if($progressData){
           
