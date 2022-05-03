@@ -75,6 +75,7 @@ class QuestionController extends Controller
     {
          $subcategory_id=$request->post('subcategory_id');
          $get_existing_attnd_question=DB::table('test_history')
+                ->whereRaw('correct_answer = student_answer')
                 ->where('student_id',$request['user_id'])
                 ->where('subcategory_id',$subcategory_id)
                 ->pluck('question_id');

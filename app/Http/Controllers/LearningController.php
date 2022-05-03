@@ -26,6 +26,7 @@ class LearningController extends Controller
              
             try {
                      $get_existing_attnd_question=DB::table('test_history')
+                                         ->whereRaw('correct_answer = student_answer')
                                         ->where('student_id',$request['user_id'])
                                         ->pluck('question_id');
 
