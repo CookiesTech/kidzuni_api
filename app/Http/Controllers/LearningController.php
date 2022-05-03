@@ -35,7 +35,7 @@ class LearningController extends Controller
                     if($get_existing_attnd_question){
                         $data = DB::table('questions')->where('country_code',$request->post('country_code'))
                                 ->whereNotIn('id',$get_existing_attnd_question)
-                                ->select('standard_id','question_text','question_image')
+                                ->select('standard_id','question_text','question_image','subcategory_id as id')
                                 ->inRandomOrder()
                                 ->limit(2)
                                 ->get();
