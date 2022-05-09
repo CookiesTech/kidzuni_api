@@ -59,13 +59,17 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('insert_quiztestdata','QuestionController@insert_quiztestdata');
     $router->post('getTestResults','QuestionController@getTestResults');
-#AnalyticsPart
+#AnalyticsPart Student
     $router->post('getAnalysticsUsage','AnalyticsController@getAnalysticsUsage');
     $router->post('analysticsProgress','AnalyticsController@analysticsProgress');
     $router->post('/analyticsQuestionLog','AnalyticsController@analyticsQuestionLog');
     $router->post('analyticsFetchSubjectandStandard','AnalyticsController@analyticsFetchSubjectandStandard');
-#Learning Part
+#Learning Part Student
     $router->post('getrecommendations','LearningController@getrecommendations');
     $router->post('getLearningStandardMaths','LearningController@getLearningStandardMaths');
     $router->get('learning_awards','LearningController@learning_awards');
+
+#Analytics part Parent
+    $router->get('getStudentsList','ParentController@getStudentsList');
+    $router->post('getParentAnalyticsusage','ParentController@getParentAnalyticsusage');
 });
