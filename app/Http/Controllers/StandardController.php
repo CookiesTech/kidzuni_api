@@ -109,7 +109,7 @@ class StandardController extends Controller
                    // ->where('s.country_code',$country_code)
                     ->select('s.id','s.standard_name','s.description','c.id as country_id','c.image','c.code as country_code')
                     ->orderBy('s.id','desc')
-                    ->groupBy('s.country_code')
+                    //->groupBy('s.country_code')
                     ->get();
             
             if(count($data)>0){
