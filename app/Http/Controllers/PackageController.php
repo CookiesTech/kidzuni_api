@@ -83,14 +83,15 @@ class PackageController extends Controller
     public function getPackage(Request $request){
         $validator = Validator::make($request->all(), [
             'package_for'           => 'required',
-            'type'=>'required'
+            'type'=>'required',
+            'country_id'=>'required'
         ]);
 
         if ($validator->fails()) {
             return $this->formatErrorResponse($validator);
         }
 
-        $data=DB::table('packages')->where('package_for',$request->post('package_for'))->where('type',$request->post('type'))->get();
+        $data=DB::table('packages')->where('package_for',$request->post('package_for'))->where('type',$request->post('type'))->where('country_id',$request->post('country_id'))->get();
         if($data){
             return response()->json(['status' => true, 'data' => $data], 200);
         }
