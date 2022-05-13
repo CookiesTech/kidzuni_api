@@ -113,11 +113,12 @@ class LearningController extends Controller
         $final_result['total_medals']=count($award_data);
         $final_result['master_in']=count($award_data);  
         $final_result['next_step']=DB::table('scores')->where('student_id',$student_id)->whereBetween('score',[1,99])->count();
-        $total_question=0; $total_time=[];$total=0;
+        $final_result['total_question']=DB::table('test_history')->where('student_id',$student_id)->count();
+        $total_time=[];$total=0;
         if($award_data){
             
             foreach ($award_data as $key => $value) {
-                $total_question+=DB::table('test_history')->where('student_id',$student_id)->count();
+              
                 $temp = explode(":", $value->time_spent);     
                     // Convert the hours into seconds
                     // and add to total
@@ -133,7 +134,7 @@ class LearningController extends Controller
                         ($total / 3600),
                         ($total / 60 % 60),
                         $total % 60);
-                    $final_result['total_question']=$total_question;
+                   
                     $final_result['time']=$formatted;
         
             return response()->json([
