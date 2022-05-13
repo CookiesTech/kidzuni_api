@@ -29,7 +29,8 @@ class CountryController extends Controller
                     DB::table('countries')->insert([
                         'name' => $value['name'],
                         'image'=>$value['image'],
-                        'code'=>$value['code']
+                        'code'=>$value['code'],
+                        'currency'=>$value['currency']
                     ]);
                 }
             }

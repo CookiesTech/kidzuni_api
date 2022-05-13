@@ -14,7 +14,7 @@ class Controller extends BaseController
         $data = [
             ['role' => 1, 'name' => 'SAdmin'],
             ['role' => 2, 'name' => 'ADMIN'],
-            ['role' => 3, 'name' => 'Parent'],
+            ['role' => 3, 'name' => 'Parent/School'],
             ['role' => 4, 'name' => 'Teacher'],
             ['role' => 5, 'name' => 'Student'],
         ];

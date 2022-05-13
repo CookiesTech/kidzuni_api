@@ -28,10 +28,10 @@ class PackageController extends Controller
                
                    if($request->post('data')['package_for']=='parent'){
                     //check package already esists in school type
-                        if (DB::table('packages')->where('type', $request->post('data')['type'])->where('package_for', $request->post('data')['package_for'])->count()==0) 
+                        if (DB::table('packages')->where('type', $request->post('data')['type'])->where('package_for', $request->post('data')['package_for'])->where('country_id',$request->post('data')['country_id'])->count()==0) 
                             {
                                  DB::table('packages')->insert(['type' => $request->post('data')['type'],'package_for'=>$request->post('data')['package_for'],
-                                'price'=>$request->post('data')['price'],'additional_price'=>$request->post('data')['additional_price']]);
+                                'price'=>$request->post('data')['price'],'additional_price'=>$request->post('data')['additional_price'],'country_id'=>$request->post('data')['country_id']]);
                             }#same packeage exists
                             else{
                                  return response()->json([
@@ -42,11 +42,13 @@ class PackageController extends Controller
                        
                    }else{
                     //check package already esists in school type
-                        if (DB::table('packages')->where('type', $request->post('data')['type'])->where('package_for', 'school')->where('minimum_count',$request->post('data')['student_min_count'])->count()==0) 
+                        if (DB::table('packages')->where('type', $request->post('data')['type'])->where('package_for', 'school')->where('minimum_count',$request->post('data')['student_min_count'])->where('country_id',$request->post('data')['country_id'])->count()==0) 
                         {
                             DB::table('packages')->insert(['type' => $request->post('data')['type'],
                             'price'=>$request->post('data')['price'],'package_for'=>$request->post('data')['package_for'],
-                            'minimum_count'=>$request->post('data')['student_min_count'],'maximum_count'=>$request->post('data')['student_max_count']]);
+                            'minimum_count'=>$request->post('data')['student_min_count'],
+                            'country_id'=>$request->post('data')['country_id'],
+                            'maximum_count'=>$request->post('data')['student_max_count']]);
                         }
                         #package exists
                         else{
