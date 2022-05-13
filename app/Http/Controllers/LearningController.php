@@ -117,7 +117,7 @@ class LearningController extends Controller
         if($award_data){
             
             foreach ($award_data as $key => $value) {
-                $total_question+=DB::table('test_history')->where('student_id',$student_id)->where('subcategory_id',$value->subcategory_id)->count();
+                $total_question+=DB::table('test_history')->where('student_id',$student_id)->count();
                 $temp = explode(":", $value->time_spent);     
                     // Convert the hours into seconds
                     // and add to total
