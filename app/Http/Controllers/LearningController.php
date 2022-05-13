@@ -109,9 +109,9 @@ class LearningController extends Controller
     public function learning_awards(Request $request){
         $student_id=$request['user_id'];
         $final_result=[];
-        $award_data=DB::table('scores')->where('score',100)->where('student_id',$student_id)->get();
-        $final_result['total_medals']=count($award_data);
-        $final_result['master_in']=count($award_data);  
+        $award_data=DB::table('scores')->where('student_id',$student_id)->get();
+        $final_result['total_medals']=DB::table('scores')->where('score',100)->where('student_id',$student_id)->count();
+        $final_result['master_in']=DB::table('scores')->where('score',100)->where('student_id',$student_id)->count();  
         $final_result['next_step']=DB::table('scores')->where('student_id',$student_id)->whereBetween('score',[1,99])->count();
         $final_result['total_question']=DB::table('test_history')->where('student_id',$student_id)->count();
         $total_time=[];$total=0;
