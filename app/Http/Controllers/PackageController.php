@@ -72,7 +72,9 @@ class PackageController extends Controller
     public function getAll(Request $request)
     {
        
-        $data=DB::table('packages')->orderBy('id','desc')->get();
+        $data=DB::table('packages as p')->join('countries as c','c.id','=','p.country_id')
+            ->select('p.*','c.name')
+            ->orderBy('p.id','desc')->get();
 
         return response()->json(['status' => true, 'data' => $data], 200);
         
