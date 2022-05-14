@@ -26,8 +26,8 @@ class QuestionController extends Controller
         $student_id=$request['user_id'];
         $subcategory_id=$request->post('subcategory_id');
        
-        if(DB::table('test_history')->where('student_id',$student_id)->where('question_id',$request->post('question_id'))->count()==0){
-              DB::table('test_history')->insert([
+       
+            DB::table('test_history')->insert([
             'question_id'=>$request->post('question_id'),
             'student_id'=>$student_id,
             'subcategory_id'=>$subcategory_id,
@@ -47,13 +47,9 @@ class QuestionController extends Controller
                 'subject_id'=>$request->post('subject_id'),
                 'time_spent'=>$request->post('time')
             ]);
-             $score=DB::table('scores')->where('student_id',$student_id)->where('subcategory_id',$subcategory_id)->select('score')->first();
-            return response()->json(['status' => true, 'score' =>$score->score], 200);
-        }
-        else{
-            $score=DB::table('scores')->where('student_id',$student_id)->where('subcategory_id',$subcategory_id)->select('score')->first();
-                return response()->json(['status' => true,  'score' =>$score->score], 200);
-        }
+             $score=DB::table('scores')->where('student_id',$student_id)->where('subcategory_id',$subcategory_id)->pluck('score');
+            return response()->json(['status' => true, 'score' =>$score], 200);
+        
       
         
     }
