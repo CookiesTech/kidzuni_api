@@ -106,7 +106,7 @@ class StandardController extends Controller
         
         try {
             $data = DB::table('standards as s')->join('countries as c','c.id','=','s.country_code')
-                   // ->where('s.country_code',$country_code)
+                    ->where('s.country_code',$country_code)
                     ->select('s.id','s.standard_name','s.description','c.id as country_id','c.image','c.code as country_code')
                     ->orderBy('s.id','desc')
                     //->groupBy('s.country_code')
