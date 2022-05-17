@@ -103,6 +103,7 @@ class StandardController extends Controller
 
     public function getAll(Request $request)
     {
+        $country_code=$request->post('country_code');
         
         try {
             $data = DB::table('standards as s')
