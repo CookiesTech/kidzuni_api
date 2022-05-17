@@ -28,8 +28,8 @@ class SubjectController extends Controller
 
             foreach ($request->post('data') as $key => $value) {
 
-                if (DB::table('subjects')->where('subject_name', $value['subject_name'])->count() == 0) {
-                    DB::table('subjects')->insert(['subject_name' => $value['subject_name']]);
+                if (DB::table('subjects')->where('subject_name', $value['subject_name'])->where('country_code', $value['country_id'])->where('standard_id', $value['standard_id'])->count() == 0) {
+                    DB::table('subjects')->insert(['subject_name' => $value['subject_name'],'country_code' => $value['country_id'],'standard_id' => $value['standard_id']]);
                 } else {
                     //data exists
 
