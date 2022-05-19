@@ -42,7 +42,8 @@ class ParentController extends Controller
                             if($value['email']!='' && $value['password'] && $value['name'])
                             {
                             $added_count=DB::table('users')->where('parent_id',$request['user_id'])->count(); 
-                            
+                             $no_of_children=DB::table('users')->where('id',$request['user_id'])->select('no_of_children as child','country_code')->first();
+                             $child_count=$no_of_children->child;
                             #check childcount
                             if($child_count >= $added_count)
                             {
