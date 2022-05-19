@@ -124,6 +124,27 @@ class StandardController extends Controller
         }
     }
 
+    public function standard_list(Request $request)
+    {
+        try {
+            $data = DB::table('standards as s')
+            ->join('countries as c','c.id','=','s.country_code')
+                    ->select('s.id','s.standard_name','c.image','c.code as country_code')
+                    ->orderBy('s.id','desc')
+                   
+                    ->get();
+            
+            if(count($data)>0){
+
+                return response()->json(['status' => true, 'data' => $data], 200);
+            }else{
+                return response()->json(['status' => false, 'data' =>[]], 200);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' =>$e], 200);
+        }
+    }
+
     public function delete_subject($id)
     {
         DB::table('standards')->where('id', $id)->delete();

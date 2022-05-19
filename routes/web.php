@@ -24,6 +24,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('getSubjectByID/{id}', 'SubjectController@edit');
     $router->post('subject_update', 'SubjectController@update');
 
+    $router->get('standard_list', 'StandardController@standard_list');
     $router->post('getAllStandard', 'StandardController@getAll');
     $router->post('add_standard', 'StandardController@add');
     $router->post('getStandardsByCountryId','StandardController@getStandardsByCountryId');
