@@ -52,7 +52,12 @@ class SubjectController extends Controller
             return response()->json(['status' => false, 'message' => 'Input Data Cannot be Empty'], 200);
         }
     }
-
+public function getAllSubjectsList(){
+    $data = DB::table('subjects as s')->join('countries as c','c.id','=','s.country_code')
+            ->join('standards as std','std.id','=','s.standard_id')
+            ->select('s.id','s.subject_name','c.name','std.standard_name')->get();
+    return response()->json(['status' => true, 'data' => $data], 200);
+}
     public function getAll(Request $request)
     {
         $country_code=$request->post('country_code');
@@ -78,20 +83,24 @@ class SubjectController extends Controller
     public function delete_subject($id)
     {
         DB::table('subjects')->where('id', $id)->delete();
+        DB::table('subcategory')->where('subject_id', $id)->delete();
+        DB::table('questions')->where('subject_id', $id)->delete();
+        DB::table('test_history')->where('subject_id', $id)->delete();
+        DB::table('scores')->where('subject_id', $id)->delete();
+        DB::table('teacher_sub_mapping')->where('subject_id', $id)->delete();
         return response()->json(['status' => true, 'message' => 'Subject Deleted Successfully'], 200);
     }
 
     public function edit($id)
     {
-        return response()->json(['status' => true, 'data' => DB::table('subjects')->where('id', $id)->select('id', 'standard', 'subject_name')->first()], 200);
+        return response()->json(['status' => true, 'data' => DB::table('subjects')->where('id', $id)->select('subject_name')->first()], 200);
     }
 
     public function update(Request $request)
-    {
+    {        
         $data = $request->post();
-
         $id = $request->post('id');
-        DB::table('subjects')->where('id', $id)->update(['standard' => $data[0]['standard'], 'subject_name' => $data[0]['subject_name']]);
+        DB::table('subjects')->where('id', $id)->update(['subject_name' => $data['subject_name']]);
         return response()->json(['status' => true, 'message' => 'Successfully Updated'], 200);
     }
 }

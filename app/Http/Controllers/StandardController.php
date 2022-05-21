@@ -145,9 +145,16 @@ class StandardController extends Controller
         }
     }
 
-    public function delete_subject($id)
+    public function delete_standard($id)
     {
         DB::table('standards')->where('id', $id)->delete();
+        DB::table('maincategory')->where('standard_id', $id)->delete();
+        DB::table('subcategory')->where('standard_id', $id)->delete();
+        DB::table('questions')->where('standard_id', $id)->delete();
+        DB::table('test_history')->where('standard_id', $id)->delete();
+        DB::table('subjects')->where('standard_id', $id)->delete();
+        DB::table('scores')->where('standard_id', $id)->delete();
+        DB::table('teacher_sub_mapping')->where('standard_id', $id)->delete();
         return response()->json(['status' => true, 'message' => 'Standard Deleted Successfully'], 200);
     }
 
@@ -165,8 +172,7 @@ class StandardController extends Controller
     {
         $data = $request->post();
         $id = $request->post('id');
-        DB::table('standards')->where('id', $id)->update(['standard_name' => $data[0]['standard_name
-        ']]);
+        DB::table('standards')->where('id', $id)->update(['standard_name' => $data['standard_name']]);
         return response()->json(['status' => true, 'message' => 'Successfully Updated'], 200);
     }
 }

@@ -31,9 +31,7 @@ class ParentController extends Controller
             return response()->json(['status' => false, 'data' => []], 200);
         }
     }
-    public function add_kids(Request $request){
-     $no_of_children=DB::table('users')->where('id',$request['user_id'])->select('no_of_children as child','country_code')->first();
-     $child_count=$no_of_children->child;
+    public function add_kids(Request $request){   
   
          try {
                 if (count($request->input('data')) > 0) {

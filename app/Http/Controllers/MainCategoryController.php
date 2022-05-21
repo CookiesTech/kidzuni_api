@@ -69,6 +69,7 @@ class MainCategoryController extends Controller
     public function delete($id)
     {
         DB::table('maincategory')->where('id', $id)->delete();
+        DB::table('subcategory')->where('mc_id', $id)->delete();
         return response()->json(['status' => true, 'message' => 'Category Deleted Successfully'], 200);
     }
 

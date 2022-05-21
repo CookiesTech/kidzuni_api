@@ -20,6 +20,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('/getStandardandSubjects','StandardController@getStandardandSubjects');
     $router->post('/add_subject', 'SubjectController@add');
     $router->post('/getAllSubjects', 'SubjectController@getAll');
+    $router->get('/getAllSubjectsList', 'SubjectController@getAllSubjectsList');
     $router->get('/delete_subject/{id}', 'SubjectController@delete_subject');
     $router->get('getSubjectByID/{id}', 'SubjectController@edit');
     $router->post('subject_update', 'SubjectController@update');
@@ -27,8 +28,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('standard_list', 'StandardController@standard_list');
     $router->post('getAllStandard', 'StandardController@getAll');
     $router->post('add_standard', 'StandardController@add');
+    $router->get('/delete_standard/{id}', 'StandardController@delete_standard');
+    $router->get('getStandardByID/{id}', 'StandardController@edit');
+    $router->post('standard_update', 'StandardController@update');
     $router->post('getStandardsByCountryId','StandardController@getStandardsByCountryId');
-    $router->get('delete_subject/{id}', 'StandardController@delete');
 
     $router->get('getAllmainCategory', 'MainCategoryController@getAll');
     $router->post('add_mainCategory', 'MainCategoryController@add');
