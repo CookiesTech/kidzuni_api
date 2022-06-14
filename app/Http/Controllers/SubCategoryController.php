@@ -11,7 +11,11 @@ class SubCategoryController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth',['except'=>
+            [
+                'getSubCategoryBymainCategory',
+            ],
+        ]);
     }
 
 
@@ -86,7 +90,7 @@ class SubCategoryController extends Controller
 
     public function getSubCategoryBymainCategory(Request $request)
     {
-        DB::table('subcategory')->where('mc_id', $request->post('mc_id'))->select('id','name')->get();
-        return response()->json(['status' => true, 'message' => 'Category Deleted Successfully'], 200);
+        $data=DB::table('subcategory')->where('mc_id', $request->post('mc_id'))->select('id','name')->get();
+        return response()->json(['status' => true, 'data' =>$data], 200);
     }
 }
