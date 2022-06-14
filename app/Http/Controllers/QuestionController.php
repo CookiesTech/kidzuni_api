@@ -236,13 +236,17 @@ class QuestionController extends Controller
     }
 
     public function insert_question(Request $request){
-print_r($request->post('answer'));exit;
+        $subcategory_name=DB::table('subcategory')->where('id', $request->post('subcategory_id'))->pluck('name');
        DB::table('questions')->insert([
         'answer'=>$request->post('answer'),
         'question_text'=>$request->post('question_data'),
         'country_code'=>$request->post('country_code'),
         'standard_id'=>$request->post('standard_id'),
-        'subcategory_id'=>$request->post('')
+        'subcategory_id'=>$request->post('subcategory_id'),
+        'input_symbols'=>$request->post('input_symbols'),
+        'flag'=>'maths',
+        'subject_id'=>$request->post('sub_id'),
+        'subcategory'=>$subcategory_name
        ]);
          return response()->json([
                 'status'       =>true,
