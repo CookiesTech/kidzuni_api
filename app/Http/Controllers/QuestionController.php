@@ -234,4 +234,13 @@ class QuestionController extends Controller
             return back()->withErrors('There was a problem uploading the data!');
         }
     }
+
+    public function insert_question(Request $request){
+
+        print_r($request->post());exit;
+         return response()->json([
+                'status'       =>true,
+                'message'      => 'successfully Inserted'
+            ], 200); 
+    }
 }
