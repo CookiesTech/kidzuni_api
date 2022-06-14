@@ -236,8 +236,14 @@ class QuestionController extends Controller
     }
 
     public function insert_question(Request $request){
-
-        print_r($request->post());exit;
+print_r($request->post('answer'));exit;
+       DB::table('questions')->insert([
+        'answer'=>$request->post('answer'),
+        'question_text'=>$request->post('question_data'),
+        'country_code'=>$request->post('country_code'),
+        'standard_id'=>$request->post('standard_id'),
+        'subcategory_id'=>$request->post('')
+       ]);
          return response()->json([
                 'status'       =>true,
                 'message'      => 'successfully Inserted'
