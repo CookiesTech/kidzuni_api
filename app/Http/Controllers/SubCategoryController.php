@@ -83,4 +83,10 @@ class SubCategoryController extends Controller
         ']]);
         return response()->json(['status' => true, 'message' => 'Successfully Updated'], 200);
     }
+
+    public function getSubCategoryBymainCategory(Request $request)
+    {
+        DB::table('subcategory')->where('mc_id', $request->post('mc_id'))->select('id','name')->get();
+        return response()->json(['status' => true, 'message' => 'Category Deleted Successfully'], 200);
+    }
 }

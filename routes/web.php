@@ -20,6 +20,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('/getStandardandSubjects','StandardController@getStandardandSubjects');
     $router->post('/add_subject', 'SubjectController@add');
     $router->post('/getAllSubjects', 'SubjectController@getAll');
+    $router->post('/getSubjectsByStandard', 'SubjectController@getSubjectsByStandard');
     $router->get('/getAllSubjectsList', 'SubjectController@getAllSubjectsList');
     $router->get('/delete_subject/{id}', 'SubjectController@delete_subject');
     $router->get('getSubjectByID/{id}', 'SubjectController@edit');
@@ -40,6 +41,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->get('getAllsubCategory', 'SubCategoryController@getAll');
     $router->post('add_subCategory', 'SubCategoryController@add');
+    $router->post('getSubCategoryBymainCategory', 'SubCategoryController@getSubCategoryBymainCategory');
     $router->get('delete_subCategory/{id}', 'SubCategoryController@delete');
    
     $router->get('getAllQuestions', 'QuestionController@getAll');

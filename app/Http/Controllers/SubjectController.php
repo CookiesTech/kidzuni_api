@@ -103,4 +103,10 @@ public function getAllSubjectsList(){
         DB::table('subjects')->where('id', $id)->update(['subject_name' => $data['subject_name']]);
         return response()->json(['status' => true, 'message' => 'Successfully Updated'], 200);
     }
+
+    public function getSubjectsByStandard(Request $request){
+        
+        $data = DB::table('subjects')->select('id','subject_name')->where('standard_id',$request->post('standard_id'))->get();
+        return response()->json(['status' => true, 'data' => $data], 200);
+    }
 }
