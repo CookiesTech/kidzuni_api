@@ -95,7 +95,7 @@ class QuestionController extends Controller
                }
            
                 $score=DB::table('scores')->where('subcategory_id',$subcategory_id)->where('student_id',$request['user_id'])->sum('score');
-               print_r($data);exit;
+              
                 if($data){
                      return response()->json(['status' => true, 'data' => $data,'score'=>$score], 200);
                }
@@ -237,7 +237,7 @@ class QuestionController extends Controller
     }
 
     public function insert_question(Request $request){
-        print_r($request->post('answer'));exit;
+       
         $subcategory_name=DB::table('subcategory')->where('id', $request->post('subcategory_id'))->first('name');
        DB::table('questions')->insert([
         'answer'=>$request->post('answer'),
