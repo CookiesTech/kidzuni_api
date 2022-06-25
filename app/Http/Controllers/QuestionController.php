@@ -121,8 +121,9 @@ class QuestionController extends Controller
         $score_details=DB::table('scores')->where('student_id',$student_id)
                         ->where('subcategory_id',$subcategory_id)
                         ->select('score','time_spent')->first();
-                        if($score_details)
-     return response()->json(['status' => true, 'data' =>$score_details], 200);
+       $question_count=DB::table('test_history')->where('subcategory_id',$subcategory_id)->where('student_id',$student_id)->count();
+    if($score_details)
+     return response()->json(['status' => true, 'data' =>$score_details,'question_count'=>$question_count], 200);
      else
       return response()->json(['status' => false, 'data' =>[]], 200);
     }

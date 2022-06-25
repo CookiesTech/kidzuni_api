@@ -245,7 +245,7 @@ class AnalyticsController extends Controller
         $data=DB::table('test_history as th')->where('th.student_id',$student_id)
               ->where('th.subcategory_id',$subcategory_id)
               ->join('questions as q','q.id','=','th.question_id')
-              ->select('th.correct_answer','th.student_answer','q.question_text as question','q.option1','q.option2')
+              ->select('th.correct_answer','th.student_answer','q.question_text as question','q.option1','q.option2','q.flag')
               ->get();
               return response()->json([
                 'status' => true,
