@@ -47,6 +47,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('getAllQuestions', 'QuestionController@getAll');
     $router->post('upload_question', 'QuestionController@upload_question');
     $router->post('insert_question', 'QuestionController@insert_question');
+    $router->get('question_details/{id}', 'QuestionController@question_details');
 
      $router->post('getTopics','TopicsController@getTopics');
 

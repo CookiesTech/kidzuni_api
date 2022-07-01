@@ -256,4 +256,12 @@ class QuestionController extends Controller
                 'message'      => 'successfully Inserted'
             ], 200); 
     }
+
+    public function question_details($id){
+        $data=DB::table('questions')->where('id',$id)->first();
+        return response()->json([
+                'status'       =>true,
+                'data'      =>$data
+            ], 200); 
+    }
 }
