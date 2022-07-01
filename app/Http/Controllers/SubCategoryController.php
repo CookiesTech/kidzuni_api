@@ -97,25 +97,27 @@ class SubCategoryController extends Controller
     public function search_results(Request $request){
         $final_data=[];
         $text=$request->search_text;
-        $country_code=$request->country_code;
-        $data=DB::table('standards')->where('country_code',$country_code)->select('id','standard_name')->get();
-             
-        // $data=DB::table('questions as q')
-        // ->Where('q.subcategory', 'like', '%' . $text . '%')->Where('q.country_code',$country_code)
-        // ->select('q.id','q.subcategory','q.question_text','q.standard_id')->get();
-
-        if($data){
-            foreach($data as $val)
-            {               
-                $search_data=DB::table('questions as q')
-                        ->Where('q.subcategory', 'like', '%' . $text . '%')->Where('q.country_code',$country_code)
-                        ->Where('q.standard_id',$val->id)
-                        ->select('q.id','q.subcategory')->get();
-           
-                $final_data[]=array('class_name'=>$val->standard_name,'sub_topics'=>$search_data);
-            }
+        if(!empty($text))
+        {
+            $country_code=$request->country_code;
+                $data=DB::table('standards')->where('country_code',$country_code)->select('id','standard_name')->get();
+                    
+                if($data){
+                    foreach($data as $val)
+                    {               
+                        $search_data=DB::table('questions as q')
+                                ->Where('q.subcategory', 'like', '%' . $text . '%')->Where('q.country_code',$country_code)
+                                ->Where('q.standard_id',$val->id)
+                                ->select('q.id','q.subcategory')->get();
+                
+                        $final_data[]=array('class_name'=>$val->standard_name,'sub_topics'=>$search_data);
+                    }
+                }
+            
+                 return response()->json(['status' => true, 'data' =>$final_data], 200);
+        }else{
+            return response()->json(['status' => false, 'messsage' =>'search text empty'], 200);
         }
-       
-        return response()->json(['status' => true, 'data' =>$final_data], 200);
+        
     }
 }
