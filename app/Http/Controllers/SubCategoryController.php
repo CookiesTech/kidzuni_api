@@ -13,7 +13,7 @@ class SubCategoryController extends Controller
     {
         $this->middleware('auth',['except'=>
             [
-                'getSubCategoryBymainCategory',
+                'getSubCategoryBymainCategory','search_results'
             ],
         ]);
     }
@@ -91,6 +91,14 @@ class SubCategoryController extends Controller
     public function getSubCategoryBymainCategory(Request $request)
     {
         $data=DB::table('subcategory')->where('mc_id', $request->post('mc_id'))->select('id','name')->get();
+        return response()->json(['status' => true, 'data' =>$data], 200);
+    }
+
+    public function search_results(Request $request){
+        $text=$request->search_text;
+       
+        $data=DB::table('questions')->Where('subcategory', 'like', '%' . $text . '%')->select('id','subcategory','question_text')->get();
+
         return response()->json(['status' => true, 'data' =>$data], 200);
     }
 }

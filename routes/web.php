@@ -79,4 +79,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 #Analytics part Parent
     $router->get('getStudentsList','ParentController@getStudentsList');
     $router->post('getParentAnalyticsusage','ParentController@getParentAnalyticsusage');
+
+    $router->post('search_results','SubCategoryController@search_results');
 });
