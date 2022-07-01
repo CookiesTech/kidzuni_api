@@ -95,10 +95,27 @@ class SubCategoryController extends Controller
     }
 
     public function search_results(Request $request){
+        $final_data=[];
         $text=$request->search_text;
-       
-        $data=DB::table('questions')->Where('subcategory', 'like', '%' . $text . '%')->select('id','subcategory','question_text')->get();
+        $country_code=$request->country_code;
+        $data=DB::table('standards')->where('country_code',$country_code)->select('id','standard_name')->get();
+             
+        // $data=DB::table('questions as q')
+        // ->Where('q.subcategory', 'like', '%' . $text . '%')->Where('q.country_code',$country_code)
+        // ->select('q.id','q.subcategory','q.question_text','q.standard_id')->get();
 
-        return response()->json(['status' => true, 'data' =>$data], 200);
+        if($data){
+            foreach($data as $val)
+            {               
+                $search_data=DB::table('questions as q')
+                        ->Where('q.subcategory', 'like', '%' . $text . '%')->Where('q.country_code',$country_code)
+                        ->Where('q.standard_id',$val->id)
+                        ->select('q.id','q.subcategory')->get();
+           
+                $final_data[]=array('class_name'=>$val->standard_name,'sub_topics'=>$search_data);
+            }
+        }
+       
+        return response()->json(['status' => true, 'data' =>$final_data], 200);
     }
 }
