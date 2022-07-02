@@ -109,7 +109,7 @@ class SubCategoryController extends Controller
                                 ->Where('q.subcategory', 'like', '%' . $text . '%')->Where('q.country_code',$country_code)
                                 ->Where('q.standard_id',$val->id)
                                 ->select('q.id','q.subcategory')->get();
-                        if(!empty($search_data))
+                        if(count($search_data)>0)
                         {
                             $final_data[]=array('class_name'=>$val->standard_name,'sub_topics'=>$search_data);
                         }
