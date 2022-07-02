@@ -115,8 +115,12 @@ class SubCategoryController extends Controller
                         }
                     }
                 }
-            
-                 return response()->json(['status' => true, 'data' =>$final_data], 200);
+                if($final_data){
+                     return response()->json(['status' => true, 'data' =>$final_data], 200);
+                }else{
+                    return response()->json(['status' => false, 'data' =>[]], 200);
+
+                }
         }else{
             return response()->json(['status' => false, 'messsage' =>'search text empty'], 200);
         }
