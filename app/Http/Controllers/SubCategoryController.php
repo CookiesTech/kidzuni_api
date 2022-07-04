@@ -105,13 +105,16 @@ class SubCategoryController extends Controller
                 if($data){
                     foreach($data as $val)
                     {               
-                        $search_data=DB::table('questions as q')
-                                ->Where('q.subcategory', 'like', '%' . $text . '%')->Where('q.country_code',$country_code)
-                                ->Where('q.standard_id',$val->id)
-                                ->select('q.id','q.subcategory')->get();
+                        $search_data=DB::table('subcategory')
+                                ->Where('name', 'like', '%' . $text . '%')->Where('country_code',$country_code)
+                                ->Where('standard_id',$val->id)
+                                ->select('id','name')
+                                ->get();
+                               
                         if(count($search_data)>0)
-                        {
-                            $final_data[]=array('class_name'=>$val->standard_name,'sub_topics'=>$search_data);
+                        { 
+                          $final_data[]=array('class_name'=>$val->standard_name,'sub_topics'=>$search_data);
+
                         }
                     }
                 }
