@@ -262,7 +262,7 @@ class AnalyticsController extends Controller
                     ->get();
         
             foreach ($final_data['subjects'] as $key => $subject) {
-                $final_data['standards']=DB::table('standards')->where('id',$subject->standard_id)
+                $final_data['standards'][]=DB::table('standards')->where('id',$subject->standard_id)
                                             ->where('country_code',$country_code)
                                             ->select('id','standard_name')
                                             ->get();
