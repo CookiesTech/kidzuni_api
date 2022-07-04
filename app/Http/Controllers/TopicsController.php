@@ -47,7 +47,10 @@ class TopicsController extends Controller
                                 ->groupBy('sc.name','sc.id')
                                 ->select('sc.id','sc.name')
                                 ->get();
-                                $res['Topics'][]=array('main_topic'=>$maintopics->name,'sub_topics'=>$subTopics);
+                    if(count($subTopics)>0){
+                        $res['Topics'][]=array('main_topic'=>$maintopics->name,'sub_topics'=>$subTopics);
+                    }
+                    
                                
                 } #maintopic lop end
                foreach ($res['Topics'] as $key => $value) {

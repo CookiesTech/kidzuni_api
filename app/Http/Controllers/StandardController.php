@@ -72,8 +72,11 @@ class StandardController extends Controller
                                 ->groupBy('sc.subject_name','sc.id')
                                 ->select('sc.id','sc.subject_name')
                                 ->get();
-                $res['standards'][]=array('standard_name'=>$maintopics->name, 'id'=>$maintopics->id,'description'=>$maintopics->description,
+                    if(count($subTopics)>0){
+                         $res['standards'][]=array('standard_name'=>$maintopics->name, 'id'=>$maintopics->id,'description'=>$maintopics->description,
                 'subjects'=>$subTopics);
+                    }
+               
                                
                 } #maintopic lop end
                foreach ($res['standards'] as $key => $value) {
