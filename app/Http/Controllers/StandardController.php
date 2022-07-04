@@ -27,7 +27,7 @@ class StandardController extends Controller
 
             foreach ($request->post('data') as $key => $value) {
 
-                if (DB::table('standards')->where('standard_name', $value['standard_name'])->count() == 0) {
+                if (DB::table('standards')->where('standard_name', $value['standard_name'])->where('country_code',$request->post('code')['country_code'])->count() == 0) {
                     DB::table('standards')->insert(['standard_name' =>$value['standard_name'],'description'=>$value['description'],
                     'country_code'=>$request->post('code')['country_code']]);
                 } else {
@@ -64,23 +64,24 @@ class StandardController extends Controller
             if(count($data)>0)
             {
                 $score=0;
-                foreach($data as $maintopics)
+                foreach($data as $std_obj)
                 {
-                    $subTopics=DB::table('subjects as sc')
-                                ->where('sc.standard_id',$maintopics->id)
+                    $subjects=DB::table('subjects as sc')
+                                ->where('sc.standard_id',$std_obj->id)
                                 ->where('sc.country_code',$request->post('country_code'))
                                 ->groupBy('sc.subject_name','sc.id')
                                 ->select('sc.id','sc.subject_name')
                                 ->get();
-                    if(count($subTopics)>0){
-                         $res['standards'][]=array('standard_name'=>$maintopics->name, 'id'=>$maintopics->id,'description'=>$maintopics->description,
-                'subjects'=>$subTopics);
+                      
+                    if(count($subjects)>0){
+                         $res['standards'][]=array('standard_name'=>$std_obj->name, 'id'=>$std_obj->id,'description'=>$std_obj->description,
+                'subjects'=>$subjects);
                     }
                
                                
                 } #maintopic lop end
-               foreach ($res['standards'] as $key => $value) {
-                  
+               foreach ($res['standards'] as $key1 => $value) {
+                 
                   foreach ($value['subjects'] as $key => $subtopics) {
                     
                           $getcount=DB::table('subcategory')
