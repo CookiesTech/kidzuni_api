@@ -254,24 +254,29 @@ class AnalyticsController extends Controller
 
     }
 
-    public function analyticsFetchSubjectandStandard(Request $request){
+    public function analytics_standard(Request $request){
         $country_code=$request->post('country_code');
         $student_id=$request['user_id'];
-        $final_data['subjects']=DB::table('subjects')->where('country_code',$country_code)
-                    ->select('id','subject_name','standard_id')
-                    ->get();
-        
-            foreach ($final_data['subjects'] as $key => $subject) {
-                $final_data['standards'][]=DB::table('standards')->where('id',$subject->standard_id)
-                                            ->where('country_code',$country_code)
-                                            ->select('id','standard_name')
-                                            ->get();
-            }
+         $final_dat=DB::table('standards')->where('country_code',$country_code)->get();
+            
         return response()->json([
                 'status' => true,
                 'data' =>$final_data
             ], 200);
     }
+
+    public function analytics_subjects(Request $request){
+            $country_code=$request->post('country_code');
+            $standard_id=$request->post('standard_id');
+            $final_dat=DB::table('subjects')->where('country_code',$country_code)
+                        ->where('standard_id',$standard_id)
+                        ->get();
+                
+            return response()->json([
+                    'status' => true,
+                    'data' =>$final_data
+                ], 200);
+        }
 
 
 }

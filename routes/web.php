@@ -73,7 +73,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('getAnalysticsUsage','AnalyticsController@getAnalysticsUsage');
     $router->post('analysticsProgress','AnalyticsController@analysticsProgress');
     $router->post('/analyticsQuestionLog','AnalyticsController@analyticsQuestionLog');
-    $router->post('analyticsFetchSubjectandStandard','AnalyticsController@analyticsFetchSubjectandStandard');
+    $router->post('analytics_standard','AnalyticsController@analytics_standard');
+    $router->post('analytics_subjects','AnalyticsController@analytics_subjects');
 #Learning Part Student
     $router->post('getrecommendations','LearningController@getrecommendations');
     $router->post('getLearningStandardMaths','LearningController@getLearningStandardMaths');
