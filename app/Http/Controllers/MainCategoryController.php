@@ -61,7 +61,7 @@ class MainCategoryController extends Controller
     
     public function getMainCategoryByStandardId(Request $request){
 
-         return response()->json(['status' => true, 'data' => DB::table('maincategory')->where('standard_id',$request->post('standard_id'))->select('id','name')->get()], 200);
+         return response()->json(['status' => true, 'data' => DB::table('maincategory')->where('standard_id',$request->post('standard_id'))->where('subject_id',$request->post('subject_id'))->select('id','name')->get()], 200);
        
     }
 
