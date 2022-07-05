@@ -22,7 +22,8 @@ class TopicsController extends Controller
        
         $res['Topics'] = array();       
          $validator = Validator::make($request->all(), [
-            'standard_id' => 'required'
+            'standard_id' => 'required',            
+            'subject_id' => 'required'
         ]);
         $student_id=$request->post('student_id');
         if ($validator->fails()) {
@@ -31,7 +32,8 @@ class TopicsController extends Controller
       
             $data = DB::table('maincategory as m')            
                     ->where('m.country_code',$request->post('country_code'))   
-                    ->where('m.standard_id',$request->post('standard_id'))        
+                    ->where('m.standard_id',$request->post('standard_id'))      
+                    ->where('m.subject_id',$request->post('subject_id'))        
                     ->select('m.id','m.name as name')->get();
             $subTopics=[];        
             if(count($data)>0)
