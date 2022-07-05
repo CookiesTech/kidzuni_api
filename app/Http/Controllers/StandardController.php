@@ -113,7 +113,7 @@ class StandardController extends Controller
             $data = DB::table('standards as s')
                     ->where('s.country_code',$country_code)
                     ->select('s.id','s.standard_name')
-                    ->orderBy('s.id','desc')
+                    ->orderBy('s.id','asc')
                    
                     ->get();
             
