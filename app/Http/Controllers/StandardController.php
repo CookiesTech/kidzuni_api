@@ -128,6 +128,8 @@ class StandardController extends Controller
         }
     }
 
+
+     
     public function standard_list(Request $request)
     {
         try {

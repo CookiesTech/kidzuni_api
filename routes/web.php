@@ -25,6 +25,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/delete_subject/{id}', 'SubjectController@delete_subject');
     $router->get('getSubjectByID/{id}', 'SubjectController@edit');
     $router->post('subject_update', 'SubjectController@update');
+    $router->post('fetchsubjectsByStandardId', 'SubjectController@fetchsubjectsByStandardId');
 
     $router->get('standard_list', 'StandardController@standard_list');
     $router->post('getAllStandard', 'StandardController@getAll');
