@@ -133,6 +133,7 @@ class QuestionController extends Controller
     {
 
         $arr_file = explode('.', $_FILES['file']['name']);
+     
         $extension = end($arr_file);
         if ('csv' == $extension) {
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
@@ -140,7 +141,7 @@ class QuestionController extends Controller
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         }
         try {
-
+   
             $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
             $sheet        = $spreadsheet->getActiveSheet();
             $tota_row    = $sheet->getHighestDataRow();
@@ -193,10 +194,20 @@ class QuestionController extends Controller
                         $dataToAdd['errors'] = implode('<br>', $errorMessage);
                         $failedToImport[]    = $dataToAdd;
                     } else {
+                         $country=DB::table('countries')->where('name', $country_code)->select('id')->first();
                         $subcategory_id=DB::table('subcategory')->where('name', $subcategory)->select('id')->first();
-                        $standard=DB::table('standards')->where('standard_name', $standard)->select('id')->first();
-                         $subject=DB::table('subjects')->where('subject_name', $subject_id)->select('id')->first();
-                          $country=DB::table('countries')->where('name', $country_code)->select('id')->first();
+                       
+                        $standard=DB::table('standards')
+                        ->where('standard_name', $standard)
+                        ->where('country_code', $country->id)
+                        ->select('id')->first();
+
+                         $subject=DB::table('subjects')->where('subject_name', $subject_id)
+                         ->where('country_code', $country->id)
+                         ->where('standard_id', $standard->id)
+                         ->select('id')->first();
+
+                         
                         DB::table('questions')->insert([
                             'subject_id'=>$subject->id,
                             'standard_id'=>$standard->id,
