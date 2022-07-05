@@ -21,8 +21,8 @@ class MainCategoryController extends Controller
 
             foreach ($request->post('data') as $key => $value) {
 
-                if (DB::table('maincategory')->where('name', $value['category_name'])->where('standard_id', $request->post('standard'))->count() == 0) {
-                    DB::table('maincategory')->insert(['name' => $value['category_name'], 'standard_id' => $request->post('standard'),'country_code'=>$request->post('country_code')]);
+                if (DB::table('maincategory')->where('name', $value['category_name'])->where('standard_id', $request->post('standard'))->where('subject_id',$request->post('subject_id'))->count() == 0) {
+                    DB::table('maincategory')->insert(['name' => $value['category_name'], 'standard_id' => $request->post('standard'),'country_code'=>$request->post('country_code'),'subject_id'=>$request->post('subject_id')]);
                 } else {
                     //data exists
 
