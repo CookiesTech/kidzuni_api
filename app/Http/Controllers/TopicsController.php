@@ -45,7 +45,6 @@ class TopicsController extends Controller
                                 ->where('sc.mc_id',$maintopics->id)
                                 ->where('sc.standard_id',$request->post('standard_id'))
                                 ->where('sc.country_code',$request->post('country_code'))
-                                ->join('questions as q','q.subcategory','=','sc.name')
                                 ->groupBy('sc.name','sc.id')
                                 ->select('sc.id','sc.name')
                                 ->get();
