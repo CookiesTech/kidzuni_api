@@ -205,7 +205,7 @@ class QuestionController extends Controller
                          $subject=DB::table('subjects')->where('subject_name', ucfirst($subject_id))
                          ->where('country_code', $country->id)
                          ->pluck('id');
-
+print_r($standard);exit;
                          
                         DB::table('questions')->insert([
                             'subject_id'=>$subject,
