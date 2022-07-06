@@ -202,13 +202,13 @@ class QuestionController extends Controller
                         ->where('country_code', $country->id)
                         ->select('id')->first();
 
-                         $subject=DB::table('subjects')->where('subject_name', $subject_id)
+                         $subject=DB::table('subjects')->where('lower(subject_name)', strtolower($subject_id))
                          ->where('country_code', $country->id)
-                         ->select('id')->first();
+                         ->pluck('id');
 
                          
                         DB::table('questions')->insert([
-                            'subject_id'=>$subject->id,
+                            'subject_id'=>$subject,
                             'standard_id'=>$standard->id,
                             'subcategory'=>$subcategory,
                             'subcategory_id'=>$subcategory_id->id,
