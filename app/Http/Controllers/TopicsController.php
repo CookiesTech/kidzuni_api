@@ -29,7 +29,11 @@ class TopicsController extends Controller
         if ($validator->fails()) {
             return $this->formatErrorResponse($validator);
         }
-      
+      $res['standard']=DB::table('standards')->where('id',$request->post('standard_id'))
+                    ->where('country_code',$request->post('country_code')) 
+                    ->select('id','standard_name','description')->first();
+
+
             $data = DB::table('maincategory as m')            
                     ->where('m.country_code',$request->post('country_code'))   
                     ->where('m.standard_id',$request->post('standard_id'))      
