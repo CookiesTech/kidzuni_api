@@ -23,6 +23,7 @@ public function get_subjects(Request $request)
         $country_code=$request->country_code;
         $data=DB::table('subjects as s')->where('s.country_code',$country_code)
                 ->join('subcategory as sc','sc.subject_id','=','s.id')
+                ->distinct('s.subject_name')
                 ->select('s.id','s.subject_name')->get();
         return response()->json([
                 'status' => true,
