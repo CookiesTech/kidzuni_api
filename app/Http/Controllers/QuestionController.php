@@ -202,7 +202,7 @@ class QuestionController extends Controller
                         ->where('country_code', $country->id)
                         ->select('id')->first();
 
-                         $subject=DB::table('subjects')->whereRaw('subject_name', ucfirst($subject_id))
+                         $subject=DB::table('subjects')->where('subject_name', ucfirst($subject_id))
                          ->where('country_code', $country->id)
                          ->pluck('id');
 
