@@ -67,7 +67,6 @@ class StandardController extends Controller
                 foreach($data as $std_obj)
                 {
                     $subjects=DB::table('subjects as sc')
-                                ->where('sc.standard_id',$std_obj->id)
                                 ->where('sc.country_code',$request->post('country_code'))
                                 ->groupBy('sc.subject_name','sc.id')
                                 ->select('sc.id','sc.subject_name')

@@ -80,6 +80,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('getrecommendations','LearningController@getrecommendations');
     $router->post('getLearningStandardMaths','LearningController@getLearningStandardMaths');
     $router->get('learning_awards','LearningController@learning_awards');
+    $router->post('get_subjects','LearningController@get_subjects');
 
 #Analytics part Parent
     $router->get('getStudentsList','ParentController@getStudentsList');

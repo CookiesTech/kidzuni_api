@@ -113,7 +113,8 @@ class AuthController extends Controller
            $date =explode(" ",$purchased_date)[0];
             $newdate =date("Y-m-d", strtotime ( '+1 month' , strtotime ( $date ) )) ;
             #check plan expired or not 
-             $diff= strtotime($newdate)-strtotime($current_datetime);          
+             $diff= strtotime($newdate)-strtotime($current_datetime);  
+                   
             if($diff >0){
                 
                  $token = $this->create_token(Auth::user()->role,Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));

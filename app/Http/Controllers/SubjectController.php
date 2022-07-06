@@ -28,8 +28,8 @@ class SubjectController extends Controller
 
             foreach ($request->post('data') as $key => $value) {
 
-                if (DB::table('subjects')->where('subject_name', $value['subject_name'])->where('country_code', $request->post('code')['country_id'])->where('standard_id', $request->post('standard')['standard_id'])->count() == 0) {
-                    DB::table('subjects')->insert(['subject_name' => $value['subject_name'],'country_code' => $request->post('code')['country_id'],'standard_id' => $request->post('standard')['standard_id']]);
+                if (DB::table('subjects')->where('subject_name', $value['subject_name'])->where('country_code', $request->post('country_code'))->count() == 0) {
+                    DB::table('subjects')->insert(['subject_name' => $value['subject_name'],'country_code' => $request->post('country_code')]);
                 } else {
                     //data exists
 
@@ -54,8 +54,7 @@ class SubjectController extends Controller
     }
 public function getAllSubjectsList(){
     $data = DB::table('subjects as s')->join('countries as c','c.id','=','s.country_code')
-            ->join('standards as std','std.id','=','s.standard_id')
-            ->select('s.id','s.subject_name','c.name','std.standard_name')->get();
+            ->select('s.id','s.subject_name','c.name')->get();
     return response()->json(['status' => true, 'data' => $data], 200);
 }
     public function getAll(Request $request)
@@ -106,7 +105,7 @@ public function getAllSubjectsList(){
 
     public function getSubjectsByStandard(Request $request){
         
-        $data = DB::table('subjects')->select('id','subject_name')->where('standard_id',$request->post('standard_id'))->get();
+        $data = DB::table('subjects')->select('id','subject_name')->where('country_code',$request->post('country_code'))->get();
         return response()->json(['status' => true, 'data' => $data], 200);
     }
 }
