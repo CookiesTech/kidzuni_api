@@ -198,16 +198,16 @@ class QuestionController extends Controller
                          $country=DB::table('countries')->where('name', $country_code)->select('id')->first();
                         $subcategory_id=DB::table('subcategory')->where('name', $subcategory)->select('id')->first();
                       
-                        $standard_id=DB::table('standards')
-                         ->whereRaw('standard_name like (?)',["%{$standard}%"])
-                        ->where('country_code', $country->id)
-                        ->select('id')->first();
-
+                       
                          $subject=DB::table('subjects')->where('subject_name', ucfirst($subject_id))
                          ->where('country_code', $country->id)
                          ->pluck('id');
 
-                         
+                          $standard_id=DB::table('standards')
+                        ->where('country_code', $country->id)
+                         ->where('standard_name', $standard)
+                        ->select('id')->first();
+
                         DB::table('questions')->insert([
                             'subject_id'=>$subject[0],
                             'standard_id'=>$standard_id->id,
