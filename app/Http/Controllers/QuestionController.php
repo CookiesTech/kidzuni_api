@@ -204,7 +204,6 @@ class QuestionController extends Controller
 
                          $subject=DB::table('subjects')->where('subject_name', $subject_id)
                          ->where('country_code', $country->id)
-                         ->where('standard_id', $standard->id)
                          ->select('id')->first();
 
                          
