@@ -256,7 +256,6 @@ class AnalyticsController extends Controller
 
     public function analytics_standard(Request $request){
         $country_code=$request->post('country_code');
-        $student_id=$request['user_id'];
          $final_data=DB::table('standards')->where('country_code',$country_code)->select('id','standard_name')->get();
             
         return response()->json([
@@ -267,9 +266,8 @@ class AnalyticsController extends Controller
 
     public function analytics_subjects(Request $request){
             $country_code=$request->post('country_code');
-            $standard_id=$request->post('standard_id');
             $final_data=DB::table('subjects')->where('country_code',$country_code)
-                        ->where('standard_id',$standard_id)->select('id','subject_name')
+                       ->select('id','subject_name')
                         ->get();
                 
             return response()->json([
