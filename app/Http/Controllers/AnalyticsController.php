@@ -144,35 +144,35 @@ class AnalyticsController extends Controller
                         $data['total_time']=0;
                     }
        }
-       # for yesterday
+       # for today
        else if ($inputDaterange=='today')           
        {
-           $yesderday=explode(' ',Carbon::now())[0];
+           $today=explode(' ',Carbon::now())[0];
             $data['correctAnswer_sum']=DB::table('test_history')
                                 ->where('student_id',$student_id)
                                 ->where('standard_id',$standard_id)
                                 ->where('subject_id',$subject_id)
-                                ->whereDate('created_at', $yesderday)
+                                ->whereDate('created_at', $today)
                                 ->whereRaw('correct_answer = student_answer')
                                 ->count();
             $data['wrongAnswer_sum']=DB::table('test_history')
                                 ->where('standard_id',$standard_id)
                                 ->where('subject_id',$subject_id)
-                                ->whereDate('created_at', $yesderday)
+                                ->whereDate('created_at', $today)
                                 ->where('student_id',$student_id)
                                 ->whereRaw('correct_answer != student_answer')
                                 ->count();
             $data['topicsCount']=DB::table('test_history')
                                 ->where('standard_id',$standard_id)
                                 ->where('subject_id',$subject_id)
-                                ->whereDate('created_at', $yesderday)
+                                ->whereDate('created_at', $today)
                                 ->where('student_id',$student_id)
                                 ->distinct('subcategory_id')
                                 ->count();
             $timeData=DB::table('scores')
                                 ->where('standard_id',$standard_id)
                                 ->where('subject_id',$subject_id)
-                                ->whereDate('created_at', $yesderday)
+                                ->whereDate('created_at', $today)
                                 ->where('student_id',$student_id)
                                 ->select('time_spent')->get();
 
@@ -211,7 +211,23 @@ class AnalyticsController extends Controller
 
     public function analysticsProgress(Request $request){
         $student_id=$request['user_id'];//->whereBetween('score',[80,99])
-        $progressData=DB::table('scores')->where('student_id',$student_id)->get();
+        $standard_id=$request->standard_id;
+        $subject_id=$request->subject_id;
+        $date_range=$request->date_range;
+        $country_code=$request->country_code;
+        $progressData='';
+        if($date_range=='month'){
+            $progressData=DB::table('scores')->where('student_id',$student_id)->whereMonth('created_at',date('m'))
+                        ->where('standard_id',$standard_id)->where('subject_id',$subject_id)->get();
+        }else if($date_range=='last_week'){
+            $progressData=DB::table('scores')->where('student_id',$student_id)->whereBetween('created_at',[Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
+                        ->where('standard_id',$standard_id)->where('subject_id',$subject_id)->get();
+        }else{
+            $today=explode(' ',Carbon::now())[0];
+              $progressData=DB::table('scores')->where('student_id',$student_id)->whereDate('created_at', $today) 
+                        ->where('standard_id',$standard_id)->where('subject_id',$subject_id)->get();
+        }
+
       
         $final_result = array();
         if($progressData){
