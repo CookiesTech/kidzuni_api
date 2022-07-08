@@ -207,7 +207,7 @@ class QuestionController extends Controller
                         ->where('country_code', $country->id)
                          ->where('standard_name', $standard)
                         ->select('id')->first();
-
+print_r($standard);
                         DB::table('questions')->insert([
                             'subject_id'=>$subject[0],
                             'standard_id'=>$standard_id->id,
