@@ -273,9 +273,9 @@ class ParentController extends Controller
                     }
        }
        # for yesterday
-       else if ($inputDaterange=='yesterday')           
+       else if ($inputDaterange=='today')           
        {
-           $yesderday=explode(' ',Carbon::yesterday())[0];
+           $yesderday=explode(' ',Carbon::now())[0];
             $data['correctAnswer_sum']=DB::table('test_history')
                                 ->where('student_id',$student_id)
                                 ->where('standard_id',$standard_id)
