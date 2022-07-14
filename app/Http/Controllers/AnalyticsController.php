@@ -21,13 +21,13 @@ class AnalyticsController extends Controller
          $student_id=$request['user_id'];
         $data=[];
      $subject_id='';$standard_id='';
-     if($request->post('standard_id')==''){         
-         $standard_id=DB::table('standards')->where('country_code',$request->post('country_code'))->limit(1)->pluck('id');
+     if($request->post('standard_id')=='All'){         
+         $standard_id=DB::table('standards')->where('country_code',$request->post('country_code'))->pluck('id');
        
         }else{
             $standard_id=$request->post('standard_id');
         }
-        if($request->post('subject_id')==''){
+        if($request->post('subject_id')=='All'){
             $subject_id=DB::table('subjects')->where('country_code',$request->post('country_code'))->limit(1)->pluck('id');
            
         }else{
@@ -39,28 +39,28 @@ class AnalyticsController extends Controller
            
             $data['correctAnswer_sum']=DB::table('test_history')
                                 ->where('student_id',$student_id)
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereMonth('created_at',date('m'))
                                 ->whereRaw('correct_answer = student_answer')
                                 ->count();
             $data['wrongAnswer_sum']=DB::table('test_history')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereMonth('created_at',date('m'))
                                 ->where('student_id',$student_id)
                                 ->whereRaw('correct_answer != student_answer')
                                 ->count();
             $data['topicsCount']=DB::table('test_history')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                 ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereMonth('created_at',date('m'))
                                 ->where('student_id',$student_id)
                                 ->distinct('subcategory_id')
                                 ->count();
             $timeData=DB::table('scores')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                 ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereMonth('created_at',date('m'))
                                 ->where('student_id',$student_id)
                                 ->select('time_spent')->get();
@@ -92,29 +92,28 @@ class AnalyticsController extends Controller
        }else if($inputDaterange=='last_week')
        {
              $data['correctAnswer_sum']=DB::table('test_history')
-                                ->where('student_id',$student_id)
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereBetween('created_at',[Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
                                 ->whereRaw('correct_answer = student_answer')
                                 ->count();
             $data['wrongAnswer_sum']=DB::table('test_history')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereBetween('created_at',[Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
                                 ->where('student_id',$student_id)
                                 ->whereRaw('correct_answer != student_answer')
                                 ->count();
             $data['topicsCount']=DB::table('test_history')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereBetween('created_at',[Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
                                 ->where('student_id',$student_id)
                                 ->distinct('subcategory_id')
                                 ->count();
             $timeData=DB::table('scores')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereBetween('created_at',[Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
                                 ->where('student_id',$student_id)
                                 ->select('time_spent')->get();
@@ -150,28 +149,28 @@ class AnalyticsController extends Controller
            $today=explode(' ',Carbon::now())[0];
             $data['correctAnswer_sum']=DB::table('test_history')
                                 ->where('student_id',$student_id)
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                               ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereDate('created_at', $today)
                                 ->whereRaw('correct_answer = student_answer')
                                 ->count();
             $data['wrongAnswer_sum']=DB::table('test_history')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereDate('created_at', $today)
                                 ->where('student_id',$student_id)
                                 ->whereRaw('correct_answer != student_answer')
                                 ->count();
             $data['topicsCount']=DB::table('test_history')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                               ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereDate('created_at', $today)
                                 ->where('student_id',$student_id)
                                 ->distinct('subcategory_id')
                                 ->count();
             $timeData=DB::table('scores')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                               ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereDate('created_at', $today)
                                 ->where('student_id',$student_id)
                                 ->select('time_spent')->get();
@@ -211,24 +210,35 @@ class AnalyticsController extends Controller
 
     public function analysticsProgress(Request $request){
         $student_id=$request['user_id'];//->whereBetween('score',[80,99])
-        $standard_id=$request->standard_id;
-        $subject_id=$request->subject_id;
+        $subject_id='';$standard_id='';
+     if($request->post('standard_id')=='All'){         
+         $standard_id=DB::table('standards')->where('country_code',$request->post('country_code'))->pluck('id');
+       
+        }else{
+            $standard_id=$request->post('standard_id');
+        }
+        if($request->post('subject_id')=='All'){
+            $subject_id=DB::table('subjects')->where('country_code',$request->post('country_code'))->limit(1)->pluck('id');
+           
+        }else{
+            $subject_id=$request->post('subject_id');
+        }
         $date_range=$request->date_range;
         $country_code=$request->country_code;
         $progressData='';
         if($date_range=='month'){
             $progressData=DB::table('scores')->where('student_id',$student_id)->whereMonth('created_at',date('m'))
-                        ->where('standard_id',$standard_id)->where('subject_id',$subject_id)->get();
+                        ->whereIn('standard_id',$standard_id)->whereIn('subject_id',$subject_id)->get();
         }else if($date_range=='last_week'){
             $progressData=DB::table('scores')->where('student_id',$student_id)->whereBetween('created_at',[Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
-                        ->where('standard_id',$standard_id)->where('subject_id',$subject_id)->get();
+                        ->whereIn('standard_id',$standard_id)->whereIn('subject_id',$subject_id)->get();
         }else{
             $today=explode(' ',Carbon::now())[0];
               $progressData=DB::table('scores')->where('student_id',$student_id)->whereDate('created_at', $today) 
-                        ->where('standard_id',$standard_id)->where('subject_id',$subject_id)->get();
+                       ->whereIn('standard_id',$standard_id)->whereIn('subject_id',$subject_id)->get();
         }
 
-      
+     
         $final_result = array();
         if($progressData){
           

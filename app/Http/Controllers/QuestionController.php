@@ -174,6 +174,7 @@ class QuestionController extends Controller
                       $option3 = $sheet->getCell('I' . $row)->getValue();
                       $option4 = $sheet->getCell('J' . $row)->getValue();
                       $answer = $sheet->getCell('K' . $row)->getValue();
+                      $solution = $sheet->getCell('L' . $row)->getValue();
                     //   $mark = $sheet->getCell('L' . $row)->getValue();
                     //   $wrong_answermark_deduction = $sheet->getCell('M' . $row)
                   
@@ -207,7 +208,7 @@ class QuestionController extends Controller
                         ->where('country_code', $country->id)
                          ->where('standard_name', $standard)
                         ->select('id')->first();
-print_r($standard);
+
                         DB::table('questions')->insert([
                             'subject_id'=>$subject[0],
                             'standard_id'=>$standard_id->id,
@@ -221,6 +222,7 @@ print_r($standard);
                             'option3'=>$option3,
                             'option4'=>$option4,
                             'answer'=>$answer,
+                            'solution'=>$solution,
                             //'mark'=>$mark,
                            // 'wrong_answer_mark'=>$wrong_answermark_deduction                                 
                         ]);
@@ -260,6 +262,7 @@ print_r($standard);
         'input_symbols'=>$request->post('input_symbols'),
         'flag'=>'maths',
         'subject_id'=>$request->post('sub_id'),
+        'solution'=>$request->post('solution'),
         'subcategory'=>$subcategory_name->name
        ]);
          return response()->json([

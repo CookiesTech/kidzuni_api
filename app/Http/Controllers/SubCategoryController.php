@@ -121,7 +121,7 @@ class SubCategoryController extends Controller
                 if($final_data){
                      return response()->json(['status' => true, 'data' =>$final_data], 200);
                 }else{
-                    return response()->json(['status' => false, 'data' =>[]], 200);
+                    return response()->json(['status' => true, 'data' =>[]], 200);
 
                 }
         }else{

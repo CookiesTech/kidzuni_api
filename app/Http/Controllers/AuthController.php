@@ -38,7 +38,7 @@ class AuthController extends Controller
     {
         //validate incoming request 
          $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
+            'name' => 'required|string|unique:users',
             'email' => 'required|email|unique:users',
             'password' => 'required',
             'type' => 'required',
@@ -86,58 +86,71 @@ class AuthController extends Controller
     }
     public function login(Request $request)
     {
-        //validate incoming request 
+        //validate incoming request      
+        $input = $request->all();
         $this->validate($request, [
-            'email' => 'required|string',
-            'password' => 'required|string',
-        ]);
-        
-        $credentials = $request->only(['email', 'password']);
 
-        if (!$token = Auth::attempt($credentials)) {
-            return response()->json(['status'=>false,'message' => 'Unauthorized'], 200);
-        }
-        $purchased_date='';
-        #if student get parent purchase date
-        if(Auth::user()->role==5){
-            $getparent_id=DB::table('users')->where('id',Auth::user()->parent_id)
-                            ->select('purchased_datetime')->first();
-                            $purchased_date=$getparent_id->purchased_datetime;
-        }else{
-            $purchased_date=Auth::user()->purchased_datetime;
-        }
-        
-        $current_datetime=date('Y-m-d');
-        $type=Auth::user()->subscription_type;
-        if($type=='monthly'){
-           $date =explode(" ",$purchased_date)[0];
-            $newdate =date("Y-m-d", strtotime ( '+1 month' , strtotime ( $date ) )) ;
-            #check plan expired or not 
-             $diff= strtotime($newdate)-strtotime($current_datetime);  
-                   
-            if($diff >0){
+            'name' => 'required',
+
+            'password' => 'required',
+
+        ]);
+
+  
+
+        $fieldType = filter_var($request->name, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+
+        if(auth()->attempt(array($fieldType => $input['name'], 'password' => $input['password'])))
+
+        {
+
+            $purchased_date='';
+            #if student get parent purchase date
+            if(Auth::user()->role==5){
+                $getparent_id=DB::table('users')->where('id',Auth::user()->parent_id)
+                                ->select('purchased_datetime')->first();
+                                $purchased_date=$getparent_id->purchased_datetime;
+            }else{
+                $purchased_date=Auth::user()->purchased_datetime;
+            }
+            
+            $current_datetime=date('Y-m-d');
+            $type=Auth::user()->subscription_type;
+            if($type=='monthly'){
+                 $date =explode(" ",$purchased_date)[0];
+                $newdate =date("Y-m-d", strtotime ( '+1 month' , strtotime ( $date ) )) ;
+                #check plan expired or not 
+                $diff= strtotime($newdate)-strtotime($current_datetime);  
+                    
+                if($diff >0){
+                    
+                    $token = $this->create_token(Auth::user()->role,Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
+                    return $this->respondWithToken($token);
+                }#plan expired
+                else{
+                    return response()->json(['status'=>false,'message' => 'Plan Expired'], 200);
+                }
+            }#plan type Annual
+            else{
+                $date =explode(" ",$purchased_date)[0];
+                $newdate = date("Y-m-d", strtotime ( '+12 month' , strtotime ( $date ) )) ;
+                $diff= strtotime($newdate)-strtotime($current_datetime);    
                 
-                 $token = $this->create_token(Auth::user()->role,Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
-                return $this->respondWithToken($token);
-            }#plan expired
-            else{
-                return response()->json(['status'=>false,'message' => 'Plan Expired'], 200);
+                if ($diff>0){
+                        $token = $this->create_token(Auth::user()->role,Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
+                    
+                        return $this->respondWithToken($token);
+                    }#plan expired
+                    else{
+                        return response()->json(['status'=>false,'message' => 'Plan Expired'], 200);
+                    }
             }
-        }#plan type Annual
-        else{
-            $date =explode(" ",$purchased_date)[0];
-            $newdate = date("Y-m-d", strtotime ( '+12 month' , strtotime ( $date ) )) ;
-           $diff= strtotime($newdate)-strtotime($current_datetime);    
-           
-           if ($diff>0){
-                 $token = $this->create_token(Auth::user()->role,Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
-               
-                return $this->respondWithToken($token);
-            }#plan expired
-            else{
-                return response()->json(['status'=>false,'message' => 'Plan Expired'], 200);
+
+            }else{
+
+                return response()->json(['status'=>false,'message' => 'Unauthorized'], 200);
+
             }
-        }
        
     }
 

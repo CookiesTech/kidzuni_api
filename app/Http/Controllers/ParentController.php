@@ -87,7 +87,7 @@ class ParentController extends Controller
                             #check childcount
                             if($child_count >= $added_count)
                             {
-                                    if(DB::table('users')->where('email',$value['email'])->count()==0)
+                                    if(DB::table('users')->where('name',$value['name'])->count()==0)
                                     {
                                             $plainPassword = $value['password'];
                                             DB::table('users')->insert([
@@ -99,9 +99,9 @@ class ParentController extends Controller
                                             'role'=>5                            
                                             ]);
                                         }
-                                        #email exists
+                                        #name exists
                                         else{
-                                            return response()->json(['status' => false, 'message' =>'email exists'], 200);
+                                            return response()->json(['status' => false, 'message' =>'name exists'], 200);
                                         }
                                 }
                                 #child countoverlimit
@@ -335,5 +335,39 @@ class ParentController extends Controller
                 'data' =>$data
             ], 200);
                    
+    }
+
+
+    public function kid_password_reset(Request $request){
+       
+         $validator = Validator::make($request->all(), [
+           
+            'id' => 'required',
+            'password' => 'required|string',
+        ]);
+        
+        if ($validator->fails()) {
+            return $this->formatErrorResponse($validator);
+        }
+        $id=$request->post('id');
+        #check user exists
+        if(DB::table('users')->where('id',$id)->count()>0)
+        {               
+         
+          $plainPassword = $request->input('password');
+          
+         $user_data=User::where('id',$id)->update(['password'=>app('hash')->make($plainPassword)]);         
+          
+         if($user_data){
+            return response()->json(['status'=>true,'message' =>'Password Updated Successfully'], 200);
+         }else{
+             return response()->json(['status'=>false,'message' => 'Error on Update!'], 200);
+         }
+        }
+        #user does not exists
+        else{
+            return response()->json(['status'=>false,'message' => 'User Id not Found'], 200);
+        }
+          
     }
 }
