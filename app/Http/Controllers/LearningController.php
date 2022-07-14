@@ -55,7 +55,7 @@ public function get_subjects(Request $request)
                 }else{
                         $data = DB::table('questions')->where('country_code',$request->post('country_code'))
                                 
-                                ->select('standard_id','question_text','question_image','flag')
+                                ->select('standard_id','question_text','question_image','flag','subcategory_id as id')
                                 ->inRandomOrder()
                                 ->limit(2)
                                 ->get();
