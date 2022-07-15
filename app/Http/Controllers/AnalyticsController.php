@@ -215,13 +215,13 @@ class AnalyticsController extends Controller
          $standard_id=DB::table('standards')->where('country_code',$request->post('country_code'))->pluck('id');
        
         }else{
-            $standard_id=$request->post('standard_id');
+            $standard_id=[$request->post('standard_id')];
         }
         if($request->post('subject_id')=='All'){
             $subject_id=DB::table('subjects')->where('country_code',$request->post('country_code'))->limit(1)->pluck('id');
            
         }else{
-            $subject_id=$request->post('subject_id');
+            $subject_id=[$request->post('subject_id')];
         }
         $date_range=$request->date_range;
         $country_code=$request->country_code;
