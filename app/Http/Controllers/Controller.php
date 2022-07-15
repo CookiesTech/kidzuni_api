@@ -31,7 +31,7 @@ class Controller extends BaseController
                'country_code' =>Auth::user()->country_code,
                'no_of_children'=>Auth::user()->no_of_children,
                'subscription_type'=>Auth::user()->subscription_type,'purchaed_date'=>Auth::user()->purchased_datetime);
-            $kids_data=DB::table('users')->where('parent_id',Auth::user()->id)->select('id','name','email','role')->get();
+            $kids_data=DB::table('users')->where('parent_id',Auth::user()->id)->select('id','name','email','role','username','password')->get();
         }#role iis student
         else{
              $user = array('name' => Auth::user()->name,
