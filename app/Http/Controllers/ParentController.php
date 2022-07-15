@@ -79,7 +79,7 @@ class ParentController extends Controller
                 if (count($request->input('data')) > 0) {
                     foreach ($request->input('data') as $key => $value) 
                     {
-                            if($value['email']!='' && $value['password'] && $value['name'])
+                            if($value['username']!='' && $value['password'] && $value['name'])
                             {
                             $added_count=DB::table('users')->where('parent_id',$request['user_id'])->count(); 
                              $no_of_children=DB::table('users')->where('id',$request['user_id'])->select('no_of_children as child','country_code')->first();
@@ -87,12 +87,12 @@ class ParentController extends Controller
                             #check childcount
                             if($child_count >= $added_count)
                             {
-                                    if(DB::table('users')->where('name',$value['name'])->count()==0)
+                                    if(DB::table('users')->where('username',$value['username'])->count()==0)
                                     {
                                             $plainPassword = $value['password'];
                                             DB::table('users')->insert([
+                                            'username'=>$value['username'],
                                             'name'=>$value['name'],
-                                            'email'=>$value['email'],
                                             'password'=>app('hash')->make($plainPassword),
                                             'parent_id'=>$request['user_id'],
                                             'country_code'=>$no_of_children->country_code,

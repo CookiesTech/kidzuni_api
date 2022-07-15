@@ -90,7 +90,7 @@ class AuthController extends Controller
         $input = $request->all();
         $this->validate($request, [
 
-            'name' => 'required',
+            'username' => 'required',
 
             'password' => 'required',
 
@@ -98,9 +98,9 @@ class AuthController extends Controller
 
   
 
-        $fieldType = filter_var($request->name, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+        $fieldType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        if(auth()->attempt(array($fieldType => $input['name'], 'password' => $input['password'])))
+        if(auth()->attempt(array($fieldType => $input['username'], 'password' => $input['password'])))
 
         {
 
