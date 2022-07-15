@@ -338,12 +338,14 @@ class ParentController extends Controller
     }
 
 
-    public function kid_password_reset(Request $request){
+    public function kid_profile_update(Request $request){
        
          $validator = Validator::make($request->all(), [
            
             'id' => 'required',
             'password' => 'required|string',
+            'name' => 'required|string',
+            'username' => 'required|string',
         ]);
         
         if ($validator->fails()) {
@@ -356,7 +358,9 @@ class ParentController extends Controller
          
           $plainPassword = $request->input('password');
           
-         $user_data=User::where('id',$id)->update(['password'=>app('hash')->make($plainPassword)]);         
+         $user_data=User::where('id',$id)->update(['password'=>app('hash')->make($plainPassword),
+                        'name'=>$request->name,'username'=>$request->username
+                    ]);         
           
          if($user_data){
             return response()->json(['status'=>true,'message' =>'Password Updated Successfully'], 200);
