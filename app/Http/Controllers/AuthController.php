@@ -64,7 +64,7 @@ class AuthController extends Controller
                 'name' => $request->input('name'),
                 'username' => $request->input('username'),
                 'email' => $request->input('email'),
-                'password' =>md5($request->input('password')),
+                'password' =>$request->input('password'),
                 'phone_no'=>$request->input('phone_no'),
                 'no_of_children'=>$request->input('no_of_children'),
                 'subscription_type'=>$request->input('type'),
@@ -104,18 +104,19 @@ class AuthController extends Controller
 
         if($fieldType=='username'){
              $user = DB::table('users')->where('username',$request->username)
-                ->wherePassword(md5($request->password))
+                ->wherePassword($request->password)
                 ->first();
         }else{
            $user = DB::table('users')->whereEmail($request->username)
-                ->wherePassword(md5($request->password))
+                ->wherePassword($request->password)
                 ->first();
 
            
         }
         
         if($user)
-        {          
+        {     
+           
             $purchased_date='';
             #if student get parent purchase date
             if($user->role==5){

@@ -93,7 +93,7 @@ class ParentController extends Controller
                                             DB::table('users')->insert([
                                             'username'=>$value['username'],
                                             'name'=>$value['name'],
-                                            'password'=>md5($value['password']),
+                                            'password'=>$value['password'],
                                             'parent_id'=>$request['user_id'],
                                             'country_code'=>$no_of_children->country_code,
                                             'role'=>5                            
@@ -132,14 +132,9 @@ class ParentController extends Controller
         }
     }
     public function get_kidz_details(Request $request){
-        $kidz_data=[];
-        $data=DB::table('users')->where('parent_id',$request['user_id'])->select('id','name','username','password')->get();
-       if(count($data)>0){
-         foreach ($data as $key => $value) 
-         {
-            $kidz_data[]=array('id'=>$value->id,'name'=>$value->name,'username'=>$value->username,'password'=>md5($value->password));
-         }
-       }
+       
+        $kidz_data=DB::table('users')->where('parent_id',$request['user_id'])->select('id','name','username','password')->get();
+      
         return response()->json(['status' => true,'data'=>$kidz_data], 200);
     }
     public function getStudentsList(Request $request){
@@ -369,7 +364,7 @@ class ParentController extends Controller
          if(DB::table('users')->where('username',$request->username)->where('id','!=',$id)->count()==0)
          {
            
-            $user_data=User::where('id',$id)->update(['password'=>md5($request->password),
+            $user_data=User::where('id',$id)->update(['password'=>$request->password,
                             'name'=>$request->name,'username'=>$request->username
                         ]);         
             
