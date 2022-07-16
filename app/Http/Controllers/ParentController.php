@@ -93,7 +93,7 @@ class ParentController extends Controller
                                             DB::table('users')->insert([
                                             'username'=>$value['username'],
                                             'name'=>$value['name'],
-                                            'password'=>app('hash')->make($plainPassword),
+                                            'password'=>md5($value['password']),
                                             'parent_id'=>$request['user_id'],
                                             'country_code'=>$no_of_children->country_code,
                                             'role'=>5                            
