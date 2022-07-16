@@ -339,7 +339,7 @@ class ParentController extends Controller
 
 
     public function kid_profile_update(Request $request){
-       
+        $parent_id=$request['user_id'];
          $validator = Validator::make($request->all(), [
            
             'id' => 'required',
@@ -360,12 +360,13 @@ class ParentController extends Controller
          {
             $plainPassword = $request->input('password');
             
-            $user_data=User::where('id',$id)->update(['password'=>app('hash')->make($plainPassword),
+            $user_data=User::where('id',$id)->update(['password'=>md5($request->password),
                             'name'=>$request->name,'username'=>$request->username
                         ]);         
             
             if($user_data){
-                return response()->json(['status'=>true,'message' =>'Password Updated Successfully'], 200);
+                $kidz_data=DB::table('users')->where('parent_id',$parent_id)->select('id','name','email','role','username','password')->get();
+                return response()->json(['status'=>true,'message' =>'Profile Updated Successfully','kidz_data'=>$kidz_data], 200);
             }else{
                 return response()->json(['status'=>false,'message' => 'Error on Update!'], 200);
             }

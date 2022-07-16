@@ -35,7 +35,7 @@ class Controller extends BaseController
         }#role iis student
         else{
              $user = array('name' => Auth::user()->name,
-             'email' => Auth::user()->email,
+             'username' => Auth::user()->username,
               'id' => Auth::user()->id,
              'role' =>Auth::user()->role,
                'country_code' =>Auth::user()->country_code
