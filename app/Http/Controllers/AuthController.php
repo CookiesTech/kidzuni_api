@@ -53,7 +53,7 @@ class AuthController extends Controller
         }
 
         try {
-            $plainPassword = $request->input('password');
+           
             $role='';
              if($request->input('package_for')=='school'){
                     $role=4;
@@ -64,7 +64,7 @@ class AuthController extends Controller
                 'name' => $request->input('name'),
                 'username' => $request->input('username'),
                 'email' => $request->input('email'),
-                'password' => app('hash')->make($plainPassword),
+                'password' =>md5($request->input('password')),
                 'phone_no'=>$request->input('phone_no'),
                 'no_of_children'=>$request->input('no_of_children'),
                 'subscription_type'=>$request->input('type'),
