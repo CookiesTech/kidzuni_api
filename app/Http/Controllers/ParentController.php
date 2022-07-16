@@ -85,7 +85,7 @@ class ParentController extends Controller
                              $no_of_children=DB::table('users')->where('id',$request['user_id'])->select('no_of_children as child','country_code')->first();
                              $child_count=$no_of_children->child;
                             #check childcount
-                            if($child_count >= $added_count)
+                            if($child_count > $added_count)
                             {
                                     if(DB::table('users')->where('username',$value['username'])->count()==0)
                                     {
