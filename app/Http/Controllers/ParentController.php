@@ -132,7 +132,14 @@ class ParentController extends Controller
         }
     }
     public function get_kidz_details(Request $request){
-        $kidz_data=DB::table('users')->where('parent_id',$request['user_id'])->select('id','name','username','password')->get();
+        $kidz_data=[];
+        $data=DB::table('users')->where('parent_id',$request['user_id'])->select('id','name','username','password')->get();
+       if(count($data)>0){
+         foreach ($data as $key => $value) 
+         {
+            $kidz_data[]=array('id'=>$value->id,'name'=>$value->name,'username'=>$value->username,'password'=>md5($value->password));
+         }
+       }
         return response()->json(['status' => true,'data'=>$kidz_data], 200);
     }
     public function getStudentsList(Request $request){
