@@ -361,9 +361,8 @@ class ParentController extends Controller
          #check exists username for other user
          if(DB::table('users')->where('username',$request->username)->where('id','!=',$id)->count()==0)
          {
-            $plainPassword = $request->input('password');
-            
-            $user_data=User::where('id',$id)->update(['password'=>app('hash')->make($plainPassword),
+           
+            $user_data=User::where('id',$id)->update(['password'=>md5($request->input('password')),
                             'name'=>$request->name,'username'=>$request->username
                         ]);         
             
