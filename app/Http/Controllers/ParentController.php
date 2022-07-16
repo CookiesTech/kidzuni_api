@@ -362,7 +362,7 @@ class ParentController extends Controller
          if(DB::table('users')->where('username',$request->username)->where('id','!=',$id)->count()==0)
          {
            
-            $user_data=User::where('id',$id)->update(['password'=>md5($request->input('password')),
+            $user_data=User::where('id',$id)->update(['password'=>md5($request->password),
                             'name'=>$request->name,'username'=>$request->username
                         ]);         
             
