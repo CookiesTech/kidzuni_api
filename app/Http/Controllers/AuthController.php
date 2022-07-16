@@ -137,7 +137,7 @@ class AuthController extends Controller
                 if($diff >0){
                     
                     $token = $this->create_token($user->role,$user->id, env('SESSION_TOKEN_EXPIRY'));
-                    return $this->respondWithToken($token);
+                    return $this->respondWithToken($token,$user);
                 }#plan expired
                 else{
                     return response()->json(['status'=>false,'message' => 'Plan Expired'], 200);
