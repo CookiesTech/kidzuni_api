@@ -355,18 +355,27 @@ class ParentController extends Controller
         #check user exists
         if(DB::table('users')->where('id',$id)->count()>0)
         {               
-         
-          $plainPassword = $request->input('password');
-          
-         $user_data=User::where('id',$id)->update(['password'=>app('hash')->make($plainPassword),
-                        'name'=>$request->name,'username'=>$request->username
-                    ]);         
-          
-         if($user_data){
-            return response()->json(['status'=>true,'message' =>'Password Updated Successfully'], 200);
-         }else{
-             return response()->json(['status'=>false,'message' => 'Error on Update!'], 200);
+         #check exists username for other user
+         if(DB::table('users')->where('username',$request->username)->where('id','!=',$id)->count()){
+            $plainPassword = $request->input('password');
+            
+            $user_data=User::where('id',$id)->update(['password'=>app('hash')->make($plainPassword),
+                            'name'=>$request->name,'username'=>$request->username
+                        ]);         
+            
+            if($user_data){
+                return response()->json(['status'=>true,'message' =>'Password Updated Successfully'], 200);
+            }else{
+                return response()->json(['status'=>false,'message' => 'Error on Update!'], 200);
+            }
          }
+         #same username already exists
+         else
+         {
+            return response()->json(['status'=>false,'message' => 'Username already exists'], 200);
+         }
+
+            
         }
         #user does not exists
         else{
