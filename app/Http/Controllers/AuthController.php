@@ -100,7 +100,7 @@ class AuthController extends Controller
 
         $fieldType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        if(auth()->attempt(array($fieldType => $input['username'], 'password' => $input['password'])))
+        if(auth()->attempt(array($fieldType => $input['username'], 'password' => md5($input['password']))))
 
         {
 
@@ -162,7 +162,7 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         
-        $credentials = $request->only(['email', 'md5(password)']);
+        $credentials = $request->only(['email', 'password']);
 
         if (!$token = Auth::attempt($credentials)) {
             return response()->json(['status'=>false,'message' => 'Unauthorized'], 200);
