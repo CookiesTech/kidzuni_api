@@ -19,7 +19,53 @@ class Controller extends BaseController
             ['role' => 5, 'name' => 'Student'],
         ];
     }
-    protected function respondWithToken($token)
+    protected function respondWithToken($token,$user1)
+    {
+        $kids_data=[];$user='';
+        # check user role for appending kidz data if role is parent /school
+        if($user1->role==3 ||$user1->role==4){
+              $user = array('name' => $user1->name, 
+              'email' => $user1->email,
+              'id' => $user1->id,
+               'role' =>$user1->role,
+               'country_code' =>$user1->country_code,
+               'no_of_children'=>$user1->no_of_children,
+               'subscription_type'=>$user1->subscription_type,'purchaed_date'=>$user1->purchased_datetime);
+            //$kids_data=DB::table('users')->where('parent_id',Auth::user()->id)->select('id','name','email','role','username','password')->get();
+        }#role iis student
+        else{
+             $user = array('name' => $user1->name,
+             'username' => $user1->username,
+              'id' => $user1->id,
+             'role' =>$user1->role,
+               'country_code' =>$user1->country_code
+            );
+            
+        }
+        #if role is parent/school add kidz data
+      if($user1->role==3 || $user1->role==4){
+        return response()->json([
+            'status'=>true,
+            'token' =>$token,
+            'token_type' => 'bearer',
+            'expires_in' => env('SESSION_TOKEN_EXPIRY'),
+            'user' =>$user,            
+            //'kids_data'=>$kids_data
+        ], 200);
+      }else{
+          #logged in as student
+          return response()->json([
+            'status'=>true,
+            'token' =>$token,
+            'token_type' => 'bearer',
+            'expires_in' => env('SESSION_TOKEN_EXPIRY'),
+            'user' =>$user
+        ], 200);
+      }
+        
+    }
+
+    protected function respondWithToken1($token)
     {
         $user='';$kids_data=[];
         # check user role for appending kidz data if role is parent /school
@@ -31,7 +77,7 @@ class Controller extends BaseController
                'country_code' =>Auth::user()->country_code,
                'no_of_children'=>Auth::user()->no_of_children,
                'subscription_type'=>Auth::user()->subscription_type,'purchaed_date'=>Auth::user()->purchased_datetime);
-            $kids_data=DB::table('users')->where('parent_id',Auth::user()->id)->select('id','name','email','role','username','password')->get();
+            //$kids_data=DB::table('users')->where('parent_id',Auth::user()->id)->select('id','name','email','role','username','password')->get();
         }#role iis student
         else{
              $user = array('name' => Auth::user()->name,
@@ -50,7 +96,7 @@ class Controller extends BaseController
             'token_type' => 'bearer',
             'expires_in' => env('SESSION_TOKEN_EXPIRY'),
             'user' =>$user,            
-            'kids_data'=>$kids_data
+            //'kids_data'=>$kids_data
         ], 200);
       }else{
           #logged in as student
@@ -64,7 +110,6 @@ class Controller extends BaseController
       }
         
     }
-
     protected function formatErrorResponse(Validator $validator)
     {
         return response()->json(

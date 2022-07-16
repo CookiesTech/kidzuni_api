@@ -89,7 +89,7 @@ class ParentController extends Controller
                             {
                                     if(DB::table('users')->where('username',$value['username'])->count()==0)
                                     {
-                                            $plainPassword = $value['password'];
+                                            
                                             DB::table('users')->insert([
                                             'username'=>$value['username'],
                                             'name'=>$value['name'],
@@ -116,7 +116,7 @@ class ParentController extends Controller
                      
                     }#foreach end
                      $no_of_children=DB::table('users')->where('parent_id',$request['user_id'])->count();
-                      $kidz_data=DB::table('users')->where('parent_id',$request['user_id'])->select('id','name','email','role')->get();
+                      $kidz_data=DB::table('users')->where('parent_id',$request['user_id'])->select('id','name','username','password')->get();
                      
                      return response()->json(['status' => true, 'message' =>'Kidz Added Successfully','filled_count'=>$no_of_children,'data'=>$kidz_data], 200);
 
@@ -126,12 +126,15 @@ class ParentController extends Controller
                 }
         }
          catch (\Exception $e) {
-             print_r($e);exit;
+           
             //return error message
             return response()->json(['status' => false, 'message' =>$e], 200);
         }
     }
-
+    public function get_kidz_details(Request $request){
+        $kidz_data=DB::table('users')->where('parent_id',$request['user_id'])->select('id','name','username','password')->get();
+        return response()->json(['status' => true,'data'=>$kidz_data], 200);
+    }
     public function getStudentsList(Request $request){
         $parent_id=$request['user_id'];
         $kidData=DB::table('users')->where('parent_id',$parent_id)->select('id','name')->get();
@@ -360,7 +363,7 @@ class ParentController extends Controller
          {
             $plainPassword = $request->input('password');
             
-            $user_data=User::where('id',$id)->update(['password'=>md5($request->password),
+            $user_data=User::where('id',$id)->update(['password'=>app('hash')->make($plainPassword),
                             'name'=>$request->name,'username'=>$request->username
                         ]);         
             

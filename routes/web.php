@@ -61,6 +61,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('getPackage','PackageController@getPackage');
 
     $router->post('add_kids','ParentController@add_kids');
+    $router->get('get_kidz_details','ParentController@get_kidz_details');
     $router->get('getAllParents','ParentController@getAllParents');
     $router->get('getAllschools','SchoolController@getAllschools');
  

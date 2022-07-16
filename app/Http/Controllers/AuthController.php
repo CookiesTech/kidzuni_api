@@ -38,8 +38,9 @@ class AuthController extends Controller
     {
         //validate incoming request 
          $validator = Validator::make($request->all(), [
-            'name' => 'required|string|unique:users',
+            'username' => 'required|string|unique:users',
             'email' => 'required|email|unique:users',
+            'name' => 'required',
             'password' => 'required',
             'type' => 'required',
             'package_for' => 'required',
@@ -61,6 +62,7 @@ class AuthController extends Controller
                 }
             DB::table('users')->insert([
                 'name' => $request->input('name'),
+                'username' => $request->input('username'),
                 'email' => $request->input('email'),
                 'password' => app('hash')->make($plainPassword),
                 'phone_no'=>$request->input('phone_no'),
@@ -100,22 +102,32 @@ class AuthController extends Controller
 
         $fieldType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        if(auth()->attempt(array($fieldType => $input['username'], 'password' => md5($input['password']))))
+        if($fieldType=='username'){
+             $user = DB::table('users')->where('username',$request->username)
+                ->wherePassword(md5($request->password))
+                ->first();
+        }else{
+           $user = DB::table('users')->whereEmail($request->username)
+                ->wherePassword(md5($request->password))
+                ->first();
 
-        {
-
+           
+        }
+        
+        if($user)
+        {          
             $purchased_date='';
             #if student get parent purchase date
-            if(Auth::user()->role==5){
-                $getparent_id=DB::table('users')->where('id',Auth::user()->parent_id)
+            if($user->role==5){
+                $getparent_id=DB::table('users')->where('id',$user->parent_id)
                                 ->select('purchased_datetime')->first();
                                 $purchased_date=$getparent_id->purchased_datetime;
             }else{
-                $purchased_date=Auth::user()->purchased_datetime;
+                $purchased_date=$user->purchased_datetime;
             }
             
             $current_datetime=date('Y-m-d');
-            $type=Auth::user()->subscription_type;
+            $type=$user->subscription_type;
             if($type=='monthly'){
                  $date =explode(" ",$purchased_date)[0];
                 $newdate =date("Y-m-d", strtotime ( '+1 month' , strtotime ( $date ) )) ;
@@ -124,7 +136,7 @@ class AuthController extends Controller
                     
                 if($diff >0){
                     
-                    $token = $this->create_token(Auth::user()->role,Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
+                    $token = $this->create_token($user->role,$user->id, env('SESSION_TOKEN_EXPIRY'));
                     return $this->respondWithToken($token);
                 }#plan expired
                 else{
@@ -137,9 +149,9 @@ class AuthController extends Controller
                 $diff= strtotime($newdate)-strtotime($current_datetime);    
                 
                 if ($diff>0){
-                        $token = $this->create_token(Auth::user()->role,Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
+                        $token = $this->create_token($user->role,$user->id, env('SESSION_TOKEN_EXPIRY'));
                     
-                        return $this->respondWithToken($token);
+                        return $this->respondWithToken($token,$user);
                     }#plan expired
                     else{
                         return response()->json(['status'=>false,'message' => 'Plan Expired'], 200);
@@ -170,7 +182,7 @@ class AuthController extends Controller
         else if(Auth::user()->role==1){
 
             $token = $this->create_token(Auth::user()->role,Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
-            return $this->respondWithToken($token);
+            return $this->respondWithToken1($token);
         }else{
             return response()->json(['status'=>false,'message' => 'Unauthorized'], 200);
         }
