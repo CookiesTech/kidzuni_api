@@ -28,7 +28,7 @@ class AnalyticsController extends Controller
             $standard_id=[$request->post('standard_id')];
         }
         if($request->post('subject_id')=='All'){
-            $subject_id=DB::table('subjects')->where('country_code',$request->post('country_code'))->limit(1)->pluck('id');
+            $subject_id=DB::table('subjects')->where('country_code',$request->post('country_code'))->pluck('id');
            
         }else{
             $subject_id=[$request->post('subject_id')];
@@ -36,7 +36,7 @@ class AnalyticsController extends Controller
        $inputDaterange=$request->post('date_range');
        if($inputDaterange=='month')
        {           
-           
+          
             $data['correctAnswer_sum']=DB::table('test_history')
                                 ->where('student_id',$student_id)
                                 ->whereIn('standard_id',$standard_id)
@@ -218,7 +218,7 @@ class AnalyticsController extends Controller
             $standard_id=[$request->post('standard_id')];
         }
         if($request->post('subject_id')=='All'){
-            $subject_id=DB::table('subjects')->where('country_code',$request->post('country_code'))->limit(1)->pluck('id');
+            $subject_id=DB::table('subjects')->where('country_code',$request->post('country_code'))->pluck('id');
            
         }else{
             $subject_id=[$request->post('subject_id')];

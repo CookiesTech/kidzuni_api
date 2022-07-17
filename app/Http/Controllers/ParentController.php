@@ -82,7 +82,7 @@ class ParentController extends Controller
                             if($value['username']!='' && $value['password'] && $value['name'])
                             {
                             $added_count=DB::table('users')->where('parent_id',$request['user_id'])->count(); 
-                             $no_of_children=DB::table('users')->where('id',$request['user_id'])->select('no_of_children as child','country_code')->first();
+                             $no_of_children=DB::table('users')->where('id',$request['user_id'])->select('no_of_children as child','country_code','expiry_date')->first();
                              $child_count=$no_of_children->child;
                             #check childcount
                             if($child_count > $added_count)
@@ -96,6 +96,7 @@ class ParentController extends Controller
                                             'password'=>$value['password'],
                                             'parent_id'=>$request['user_id'],
                                             'country_code'=>$no_of_children->country_code,
+                                            'expiry_date'=>$no_of_children->expiry_date,
                                             'role'=>5                            
                                             ]);
                                         }
@@ -147,53 +148,120 @@ class ParentController extends Controller
         }
 
     }
-
-    public function getParentAnalyticsusage (Request $request)
-    {         
-        $student_id=$request->post('student_id');
-        $data=[];
-        $subject_id='';$standard_id='';
-         if($request->post('standard_id')=='')
-         {         
-            $standard_id=DB::table('standards')->where('country_code',$request->post('country_code'))->limit(1)->pluck('id');
-            
+public function getParentProgress(Request $request){
+       //->whereBetween('score',[80,99])
+        $subject_id='';$standard_id='';$student_id='';
+     if($request->post('standard_id')=='All'){  
+        $get_stud_id=DB::table('users')->where('parent_id',$request['user_id'])->limit(1)->pluck('id');
+         if(count($get_stud_id)>0){
+            $student_id=$get_stud_id[0];
+         }
+        
+        $standard_id=DB::table('standards')->where('country_code',$request->post('country_code'))->pluck('id');
+       
         }else{
-            $standard_id=$request->post('standard_id');
+             $student_id=$request->student_id;
+            $standard_id=[$request->post('standard_id')];
         }
-        if($request->post('subject_id')==''){
-            $subject_id=DB::table('subjects')->where('country_code',$request->post('country_code'))->limit(1)->pluck('id');
+        if($request->post('subject_id')=='All'){
+            $subject_id=DB::table('subjects')->where('country_code',$request->post('country_code'))->pluck('id');
            
         }else{
-            $subject_id=$request->post('subject_id');
+            $subject_id=[$request->post('subject_id')];
+        }
+        $date_range=$request->date_range;
+        $country_code=$request->country_code;
+        $progressData='';
+       
+        if($date_range=='month'){
+            $progressData=DB::table('scores')->where('student_id',$student_id)->whereMonth('created_at',date('m'))
+                        ->whereIn('standard_id',$standard_id)->whereIn('subject_id',$subject_id)->get();
+        }else if($date_range=='last_week'){
+            $progressData=DB::table('scores')->where('student_id',$student_id)->whereBetween('created_at',[Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
+                        ->whereIn('standard_id',$standard_id)->whereIn('subject_id',$subject_id)->get();
+        }else{
+            $today=explode(' ',Carbon::now())[0];
+              $progressData=DB::table('scores')->where('student_id',$student_id)->whereDate('created_at', $today) 
+                       ->whereIn('standard_id',$standard_id)->whereIn('subject_id',$subject_id)->get();
+        }
+
+     
+        $final_result = array();
+        if($progressData){
+          
+            foreach ($progressData as $key => $progress) {
+                $finalData=DB::table('subcategory as sub')
+                                ->where('sub.id',$progress->subcategory_id)
+                                ->where('scores.student_id',$student_id)
+                                ->join('scores','scores.subcategory_id','=','sub.id')
+                                ->select('sub.name','scores.subcategory_id','scores.score','scores.time_spent')
+                                ->get();
+                foreach($finalData as $final){                                    
+                    $count=DB::table('test_history')->where('subcategory_id',$final->subcategory_id)->where('student_id',$student_id)->count();
+                    $final->total_attn=$count;
+                    $final_result[] = $final;
+                }
+                                
+
+            }
+        }
+
+         return response()->json([
+                'status' => true,
+                'data' =>$final_result
+            ], 200);
+    }
+    public function getParentAnalyticsusage (Request $request)
+    {         
+         $subject_id='';$standard_id='';$student_id='';$data=[];
+        if($request->post('standard_id')=='All'){  
+        $get_stud_id=DB::table('users')->where('parent_id',$request['user_id'])->limit(1)->pluck('id');
+         if(count($get_stud_id)>0){
+            $student_id=$get_stud_id[0];
+         }
+        
+        $standard_id=DB::table('standards')->where('country_code',$request->post('country_code'))->pluck('id');
+       
+        }else{
+             $student_id=$request->student_id;
+            $standard_id=[$request->post('standard_id')];
+        }
+        if($request->post('subject_id')=='All'){
+            $subject_id=DB::table('subjects')->where('country_code',$request->post('country_code'))->pluck('id');
+           
+        }else{
+            $subject_id=[$request->post('subject_id')];
         }
        $inputDaterange=$request->post('date_range');
+      
        if($inputDaterange=='month')
        {           
            
             $data['correctAnswer_sum']=DB::table('test_history')
                                 ->where('student_id',$student_id)
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereMonth('created_at',date('m'))
                                 ->whereRaw('correct_answer = student_answer')
                                 ->count();
+           
             $data['wrongAnswer_sum']=DB::table('test_history')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereMonth('created_at',date('m'))
                                 ->where('student_id',$student_id)
                                 ->whereRaw('correct_answer != student_answer')
                                 ->count();
             $data['topicsCount']=DB::table('test_history')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereMonth('created_at',date('m'))
                                 ->where('student_id',$student_id)
                                 ->distinct('subcategory_id')
                                 ->count();
             $timeData=DB::table('scores')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereMonth('created_at',date('m'))
                                 ->where('student_id',$student_id)
                                 ->select('time_spent')->get();
@@ -226,28 +294,28 @@ class ParentController extends Controller
        {
              $data['correctAnswer_sum']=DB::table('test_history')
                                 ->where('student_id',$student_id)
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereBetween('created_at',[Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
                                 ->whereRaw('correct_answer = student_answer')
                                 ->count();
             $data['wrongAnswer_sum']=DB::table('test_history')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereBetween('created_at',[Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
                                 ->where('student_id',$student_id)
                                 ->whereRaw('correct_answer != student_answer')
                                 ->count();
             $data['topicsCount']=DB::table('test_history')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereBetween('created_at',[Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
                                 ->where('student_id',$student_id)
                                 ->distinct('subcategory_id')
                                 ->count();
             $timeData=DB::table('scores')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereBetween('created_at',[Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
                                 ->where('student_id',$student_id)
                                 ->select('time_spent')->get();
@@ -283,28 +351,28 @@ class ParentController extends Controller
            $yesderday=explode(' ',Carbon::now())[0];
             $data['correctAnswer_sum']=DB::table('test_history')
                                 ->where('student_id',$student_id)
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereDate('created_at', $yesderday)
                                 ->whereRaw('correct_answer = student_answer')
                                 ->count();
             $data['wrongAnswer_sum']=DB::table('test_history')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereDate('created_at', $yesderday)
                                 ->where('student_id',$student_id)
                                 ->whereRaw('correct_answer != student_answer')
                                 ->count();
             $data['topicsCount']=DB::table('test_history')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereDate('created_at', $yesderday)
                                 ->where('student_id',$student_id)
                                 ->distinct('subcategory_id')
                                 ->count();
             $timeData=DB::table('scores')
-                                ->where('standard_id',$standard_id)
-                                ->where('subject_id',$subject_id)
+                                ->whereIn('standard_id',$standard_id)
+                                ->whereIn('subject_id',$subject_id)
                                 ->whereDate('created_at', $yesderday)
                                 ->where('student_id',$student_id)
                                 ->select('time_spent')->get();

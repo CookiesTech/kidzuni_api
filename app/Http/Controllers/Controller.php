@@ -14,31 +14,36 @@ class Controller extends BaseController
         $data = [
             ['role' => 1, 'name' => 'SAdmin'],
             ['role' => 2, 'name' => 'ADMIN'],
-            ['role' => 3, 'name' => 'Parent/School'],
-            ['role' => 4, 'name' => 'Teacher'],
+            ['role' => 3, 'name' => 'Parent'],
+            ['role' => 4, 'name' => 'School'],
             ['role' => 5, 'name' => 'Student'],
+            ['role' => 6, 'name' => 'Teacher'],
         ];
     }
     protected function respondWithToken($token,$user1)
     {
         $kids_data=[];$user='';
         # check user role for appending kidz data if role is parent /school
-        if($user1->role==3 ||$user1->role==4){
+        if($user1->role==3 || $user1->role==4){
               $user = array('name' => $user1->name, 
               'email' => $user1->email,
               'id' => $user1->id,
                'role' =>$user1->role,
                'country_code' =>$user1->country_code,
                'no_of_children'=>$user1->no_of_children,
-               'subscription_type'=>$user1->subscription_type,'purchaed_date'=>$user1->purchased_datetime);
+               'subscription_type'=>$user1->subscription_type,
+               'purchaed_date'=>$user1->purchased_datetime,
+               'expiry_date'=>$user1->expiry_date
+              
+              );
             //$kids_data=DB::table('users')->where('parent_id',Auth::user()->id)->select('id','name','email','role','username','password')->get();
         }#role iis student
         else{
              $user = array('name' => $user1->name,
-             'username' => $user1->username,
+              'username' => $user1->username,
               'id' => $user1->id,
-             'role' =>$user1->role,
-               'country_code' =>$user1->country_code
+              'role' =>$user1->role,
+              'country_code' =>$user1->country_code
             );
             
         }
