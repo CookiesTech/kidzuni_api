@@ -266,7 +266,7 @@ class AnalyticsController extends Controller
     }
 
     public function analyticsQuestionLog(Request $request){
-        $student_id=$request->post('student_id');
+        $student_id=$request->post('student_id')?$request->post('student_id'):$request['user_id'];
         $subcategory_id=$request->post('subcategory_id');
         $data=DB::table('test_history as th')->where('th.student_id',$student_id)
               ->where('th.subcategory_id',$subcategory_id)
