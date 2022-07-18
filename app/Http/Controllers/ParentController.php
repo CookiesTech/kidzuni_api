@@ -150,17 +150,17 @@ class ParentController extends Controller
     }
 public function getParentProgress(Request $request){
        //->whereBetween('score',[80,99])
-        $subject_id='';$standard_id='';$student_id='';
+        $subject_id='';$standard_id='';$student_id=$request->student_id;
      if($request->post('standard_id')=='All'){  
-        $get_stud_id=DB::table('users')->where('parent_id',$request['user_id'])->limit(1)->pluck('id');
-         if(count($get_stud_id)>0){
-            $student_id=$get_stud_id[0];
-         }
+        // $get_stud_id=DB::table('users')->where('parent_id',$request['user_id'])->limit(1)->pluck('id');
+        //  if(count($get_stud_id)>0){
+        //     $student_id=$get_stud_id[0];
+        //  }
         
         $standard_id=DB::table('standards')->where('country_code',$request->post('country_code'))->pluck('id');
        
         }else{
-             $student_id=$request->student_id;
+             
             $standard_id=[$request->post('standard_id')];
         }
         if($request->post('subject_id')=='All'){
@@ -213,17 +213,17 @@ public function getParentProgress(Request $request){
     }
     public function getParentAnalyticsusage (Request $request)
     {         
-         $subject_id='';$standard_id='';$student_id='';$data=[];
+         $subject_id='';$standard_id=''; $student_id=$request->student_id;$data=[];
         if($request->post('standard_id')=='All'){  
-        $get_stud_id=DB::table('users')->where('parent_id',$request['user_id'])->limit(1)->pluck('id');
-         if(count($get_stud_id)>0){
-            $student_id=$get_stud_id[0];
-         }
+        // $get_stud_id=DB::table('users')->where('parent_id',$request['user_id'])->limit(1)->pluck('id');
+        //  if(count($get_stud_id)>0){
+        //     $student_id=$get_stud_id[0];
+        //  }
         
         $standard_id=DB::table('standards')->where('country_code',$request->post('country_code'))->pluck('id');
        
         }else{
-             $student_id=$request->student_id;
+           
             $standard_id=[$request->post('standard_id')];
         }
         if($request->post('subject_id')=='All'){
