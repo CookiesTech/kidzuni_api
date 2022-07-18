@@ -211,9 +211,7 @@ class AuthController extends Controller
         if(DB::table('users')->where('id',$id)->count()>0)
         {               
          
-          $plainPassword = $request->input('password');
-          
-         $user_data=User::where('id',$id)->update(['password'=>app('hash')->make($plainPassword)]);         
+         $user_data=User::where('id',$id)->update(['password'=>$request->input('password')]);         
           
          if($user_data){
             return response()->json(['status'=>true,'message' =>'Password Updated Successfully'], 200);
