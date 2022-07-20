@@ -168,6 +168,7 @@ class TeacherController extends Controller
         $data['rejected']=DB::table('questions')->where('teacher_id',$id)->where('approved_status','rejected')->count();
         $data['accepted']=DB::table('questions')->where('teacher_id',$id)->where('approved_status','approved')->count();
         $data['total_question']=DB::table('questions')->where('teacher_id',$id)->count();
+        $data['latest_question']=DB::table('questions')->where('teacher_id',$id)->limit(10)->get();
         return response()->json(['status' => true, 'data' => $data]);
     }
 
