@@ -79,6 +79,7 @@ class TeacherController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
+            echo "<pre>";print_r($e);exit;
             return response()->json(['status' => false, 'message' => 'Something Went Wrong'], 200);
         }
 
