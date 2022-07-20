@@ -89,4 +89,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('getParentProgress','ParentController@getParentProgress');
     $router->post('kid_profile_update','ParentController@kid_profile_update');
     $router->post('search_results','SubCategoryController@search_results');
+
+#Teachers Part
+    $router->post('teacher_login','AuthController@teacher_login');
+    $router->post('teacher_dashboard','TeacherController@teacher_dashboard');
+    $router->post('teacher_questions_list','TeacherController@teacher_questions_list');
+    $router->post('teacher_upload_question', 'TeacherController@teacher_upload_question');
+    $router->post('teacher_insert_question', 'TeacherController@teacher_insert_question');
+
 });

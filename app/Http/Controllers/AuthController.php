@@ -15,7 +15,7 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('auth',[
-            'except'=>['login','register','admin_login','forgot_password','update_password'],
+            'except'=>['login','register','admin_login','forgot_password','update_password','teacher_login'],
         ]);
     }
     protected function create_token($role,$id,$expiry)
@@ -153,6 +153,8 @@ class AuthController extends Controller
        
     }
 
+
+
     public function admin_login(Request $request)
     {
         //validate incoming request 
@@ -175,6 +177,44 @@ class AuthController extends Controller
         }
     }
 
+
+     public function teacher_login(Request $request)
+    {
+        //validate incoming request      
+        $input = $request->all();
+        $this->validate($request, [
+
+            'email' => 'required',
+
+            'password' => 'required',
+
+        ]);
+        $user = DB::table('teachers')->whereEmail($request->email)
+                ->wherePassword($request->password)
+                ->where('status',1)
+                ->first();
+        if($user)
+        {        
+            $token = $this->create_token($user->role,$user->id, env('SESSION_TOKEN_EXPIRY'));
+            $user = array('name' => $user->first_name, 
+              'email' => $user->email,
+              'id' => $user->id,
+               'role' =>$user->role
+              
+              );
+            return response()->json([
+            'status'=>true,
+            'token' =>$token,
+            'token_type' => 'bearer',
+            'expires_in' => env('SESSION_TOKEN_EXPIRY'),
+            'user' =>$user
+        ], 200);
+        }
+        else{
+            return response()->json(['status'=>false,'message' => 'Unauthorized'], 200);
+        }
+       
+    }
     public function forgot_password(Request $request){
        
          $validator = Validator::make($request->all(), [

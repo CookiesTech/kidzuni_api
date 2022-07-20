@@ -223,6 +223,8 @@ class QuestionController extends Controller
                             'option4'=>$option4,
                             'answer'=>$answer,
                             'solution'=>$solution,
+                            'teacher_id'=>$request['user_id'],
+                            'approved_status'=>'pending'
                             //'mark'=>$mark,
                            // 'wrong_answer_mark'=>$wrong_answermark_deduction                                 
                         ]);
@@ -263,7 +265,9 @@ class QuestionController extends Controller
         'flag'=>'maths',
         'subject_id'=>$request->post('sub_id'),
         'solution'=>$request->post('solution'),
-        'subcategory'=>$subcategory_name->name
+        'subcategory'=>$subcategory_name->name,
+        'teacher_id'=>$request['user_id'],
+        'approved_status'=>'pending'
        ]);
          return response()->json([
                 'status'       =>true,

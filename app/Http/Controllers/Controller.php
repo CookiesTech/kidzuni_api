@@ -72,49 +72,22 @@ class Controller extends BaseController
 
     protected function respondWithToken1($token)
     {
-        $user='';$kids_data=[];
-        # check user role for appending kidz data if role is parent /school
-        if(Auth::user()->role==3 ||Auth::user()->role==4){
-              $user = array('name' => Auth::user()->name, 
+      
+       $user = array('name' => Auth::user()->name, 
               'email' => Auth::user()->email,
               'id' => Auth::user()->id,
-               'role' =>Auth::user()->role,
-               'country_code' =>Auth::user()->country_code,
-               'no_of_children'=>Auth::user()->no_of_children,
-               'subscription_type'=>Auth::user()->subscription_type,'purchaed_date'=>Auth::user()->purchased_datetime);
-            //$kids_data=DB::table('users')->where('parent_id',Auth::user()->id)->select('id','name','email','role','username','password')->get();
-        }#role iis student
-        else{
-             $user = array('name' => Auth::user()->name,
-             'username' => Auth::user()->username,
-              'id' => Auth::user()->id,
-             'role' =>Auth::user()->role,
-               'country_code' =>Auth::user()->country_code
-            );
-            
-        }
-        #if role is parent/school add kidz data
-      if(Auth::user()->role==3 || Auth::user()->role==4){
+               'role' =>Auth::user()->role);
+               
         return response()->json([
-            'status'=>true,
-            'token' =>$token,
-            'token_type' => 'bearer',
-            'expires_in' => env('SESSION_TOKEN_EXPIRY'),
-            'user' =>$user,            
-            //'kids_data'=>$kids_data
-        ], 200);
-      }else{
-          #logged in as student
-          return response()->json([
             'status'=>true,
             'token' =>$token,
             'token_type' => 'bearer',
             'expires_in' => env('SESSION_TOKEN_EXPIRY'),
             'user' =>$user
         ], 200);
-      }
-        
     }
+
+    
     protected function formatErrorResponse(Validator $validator)
     {
         return response()->json(
