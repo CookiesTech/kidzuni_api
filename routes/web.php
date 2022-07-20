@@ -92,8 +92,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
 #Teachers Part
     $router->post('teacher_login','AuthController@teacher_login');
-    $router->post('teacher_dashboard','TeacherController@teacher_dashboard');
-    $router->post('teacher_questions_list','TeacherController@teacher_questions_list');
+    $router->get('teacher_dashboard','TeacherController@teacher_dashboard');
+    $router->get('teacher_questions_list','TeacherController@teacher_questions_list');
     $router->post('teacher_upload_question', 'TeacherController@teacher_upload_question');
     $router->post('teacher_insert_question', 'TeacherController@teacher_insert_question');
 
