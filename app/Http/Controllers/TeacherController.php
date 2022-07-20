@@ -46,6 +46,7 @@ class TeacherController extends Controller
             $obj->last_name = $request->input('lastname');
             $obj->username = $request->input('username');
             $obj->email = $request->input('email');
+            $obj->role = 6;
             $obj->phone = $request->input('phone');
             $obj->password = $request->input('password');
             $obj->alternative_mobile = $request->input('alternative_mobile');
