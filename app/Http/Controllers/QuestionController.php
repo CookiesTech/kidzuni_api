@@ -252,10 +252,13 @@ class QuestionController extends Controller
         }
     }
 
-    public function insert_question(Request $request){
+    public function insert_question(Request $request)
+    {
        
         $subcategory_name=DB::table('subcategory')->where('id', $request->post('subcategory_id'))->first('name');
-       DB::table('questions')->insert([
+       if($subcategory_name)
+       {
+        DB::table('questions')->insert([
         'answer'=>$request->post('answer'),
         'question_text'=>$request->post('question_data'),
         'country_code'=>$request->post('country_code'),
@@ -273,6 +276,13 @@ class QuestionController extends Controller
                 'status'       =>true,
                 'message'      => 'successfully Inserted'
             ], 200); 
+        
+        }else{
+             return response()->json([
+                'status'       =>true,
+                'message'      => 'Subcategory_not Found'
+            ], 200); 
+        }
     }
 
     public function question_details($id){
