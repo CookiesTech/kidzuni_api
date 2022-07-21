@@ -305,24 +305,32 @@ class TeacherController extends Controller
     public function teacher_insert_question(Request $request){
        
         $subcategory_name=DB::table('subcategory')->where('id', $request->post('subcategory_id'))->first('name');
-       DB::table('questions')->insert([
-        'answer'=>$request->post('answer'),
-        'question_text'=>$request->post('question_data'),
-        'country_code'=>$request->post('country_code'),
-        'standard_id'=>$request->post('standard_id'),
-        'subcategory_id'=>$request->post('subcategory_id'),
-        'input_symbols'=>$request->post('input_symbols'),
-        'flag'=>'maths',
-        'subject_id'=>$request->post('sub_id'),
-        'solution'=>$request->post('solution'),
-        'subcategory'=>$subcategory_name->name,
-        'teacher_id'=>$request['user_id'],
-        'approved_status'=>'pending'
-       ]);
+        if($subcategory_name){
+             DB::table('questions')->insert([
+            'answer'=>$request->post('answer'),
+            'question_text'=>$request->post('question_data'),
+            'country_code'=>$request->post('country_code'),
+            'standard_id'=>$request->post('standard_id'),
+            'subcategory_id'=>$request->post('subcategory_id'),
+            'input_symbols'=>$request->post('input_symbols'),
+            'flag'=>'maths',
+            'subject_id'=>$request->post('sub_id'),
+            'solution'=>$request->post('solution'),
+            'subcategory'=>$subcategory_name->name,
+            'teacher_id'=>$request['user_id'],
+            'approved_status'=>'pending'
+        ]);
          return response()->json([
                 'status'       =>true,
                 'message'      => 'successfully Inserted'
             ], 200); 
+        }else{
+             return response()->json([
+                'status'       =>true,
+                'message'      => 'Subcategory_not Found'
+            ], 200); 
+        }
+       
     }
 
     public function question_details($id){
