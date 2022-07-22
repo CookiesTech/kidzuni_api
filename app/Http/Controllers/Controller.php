@@ -70,13 +70,13 @@ class Controller extends BaseController
         
     }
 
-    protected function respondWithToken1($token)
+    protected function respondWithToken1($token,$user1)
     {
       
-       $user = array('name' => Auth::user()->name, 
-              'email' => Auth::user()->email,
-              'id' => Auth::user()->id,
-               'role' =>Auth::user()->role);
+       $user = array('name' =>$user1->name, 
+              'email' => $user1->email,
+              'id' => $user1->id,
+               'role' =>$user1->role);
                
         return response()->json([
             'status'=>true,
