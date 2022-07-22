@@ -163,8 +163,8 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         
-        $user = DB::table('teachers')->where($request->email)
-                ->where($request->password)
+        $user = DB::table('users')->where('email',$request->email)
+                ->where('password',$request->password)
                 ->where('role',1)
                 ->first();
 
