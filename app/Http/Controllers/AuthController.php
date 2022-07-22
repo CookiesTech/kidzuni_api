@@ -163,18 +163,17 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         
-        $user = DB::table('users')->where('email',$request->email)
-                ->where('password',$request->password)
-                ->where('role',1)
-                ->first();
+        $credentials = $request->only(['email', 'password']);
 
-        if (!$user) {
+        if (!$token = Auth::attempt($credentials)) {
             return response()->json(['status'=>false,'message' => 'Unauthorized'], 200);
         }#to only admin can login
-        else {
+        else if(Auth::user()->role==1){
 
-            $token = $this->create_token($user->role,$user->id, env('SESSION_TOKEN_EXPIRY'));
-            return $this->respondWithToken1($token,$user);
+            $token = $this->create_token(Auth::user()->role,Auth::user()->id, env('SESSION_TOKEN_EXPIRY'));
+            return $this->respondWithToken1($token);
+        }else{
+            return response()->json(['status'=>false,'message' => 'Unauthorized'], 200);
         }
     }
 
