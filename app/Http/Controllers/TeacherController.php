@@ -261,7 +261,8 @@ class TeacherController extends Controller
                          ->where('standard_name', $standard)
                         ->select('id')->first();
 
-                        DB::table('questions')->insert([
+                        if($standard_id){
+                            DB::table('questions')->insert([
                             'subject_id'=>$subject[0],
                             'standard_id'=>$standard_id->id,
                             'subcategory'=>$subcategory,
@@ -280,6 +281,14 @@ class TeacherController extends Controller
                                                         
                         ]);
                              $totalQuestionsAdded++;
+                        }
+                        #
+                        else{
+                            return response()->json([
+                            'status'       => false,
+                            'message'      => 'Standard Name Not found',
+                        ], 200);
+                        }
                     }
 
                  }
