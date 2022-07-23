@@ -99,4 +99,5 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('get_teacher_questions','QuestionAnswerController@get_teacher_questions');
     $router->post('add_question_answer','QuestionAnswerController@add');
     $router->post('update_answer','QuestionAnswerController@update_answer');
+    $router->get('view_question/{id}', 'QuestionAnswerController@view_question');
 });

@@ -44,11 +44,19 @@ class QuestionAnswerController extends Controller
 
     public function update_answer(Request $request)
     {
-        DB::table('question_answer')->where('id',$request->id)->update(['answer'=>$request->answer]);
+        DB::table('question_answer')->where('id',$request->id)->update(['answer'=>$request->answer,'question'=>$request->question]);
         return response()->json([
                 'status' => true,
                 'message' => 'Successfully Updated'
             ], 200);
     }
+    public function view_question($id){
 
+       $data=DB::table('question_answer')->where('id',$id)->first();
+        return response()->json([
+                'status' => true,
+                'data' =>$data
+            ], 200);
+       
+    }
 }
