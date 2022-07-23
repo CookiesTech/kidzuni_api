@@ -64,8 +64,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('get_kidz_details','ParentController@get_kidz_details');
     $router->get('getAllParents','ParentController@getAllParents');
     $router->get('getAllschools','SchoolController@getAllschools');
- 
-
 
     $router->post('getQuestionsByID','QuestionController@getQuestionsByID');
 
@@ -96,5 +94,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('teacher_questions_list','TeacherController@teacher_questions_list');
     $router->post('teacher_upload_question', 'TeacherController@teacher_upload_question');
     $router->post('teacher_insert_question', 'TeacherController@teacher_insert_question');
-
+#question Answer Part
+    $router->get('questions_list','QuestionAnswerController@getAll');
+    $router->get('get_teacher_questions','QuestionAnswerController@get_teacher_questions');
+    $router->post('add_question_answer','QuestionAnswerController@add');
+    $router->post('update_answer','QuestionAnswerController@update_answer');
 });
