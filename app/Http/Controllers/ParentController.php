@@ -158,6 +158,8 @@ public function getParentProgress(Request $request){
             }else{
                 $student_id=$request->student_id;
             }
+         }else{
+            $student_id=$request->student_id;
          }
      if($request->post('standard_id')=='All'){  
        
@@ -225,6 +227,8 @@ public function getParentProgress(Request $request){
             }else{
                 $student_id=$request->student_id;
             }
+         }else{
+            $student_id=$request->student_id;
          }
         if($request->post('standard_id')=='All'){  
        
